@@ -1,1 +1,1 @@
-# BigDataPhylogeny.github.io
+# Big Data Phylogeny Course
