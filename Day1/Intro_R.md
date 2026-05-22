@@ -43,14 +43,14 @@ library(ggtree)
 ```
 Packages in R are collections of functions.
 
-ape is used to manipulate phylogenetic trees
+`ape` is used to manipulate phylogenetic trees
 
-ggtree is used to visualise them
+`ggtree` is used to visualise them
 
 
 # Working with phylogenetic trees
 Creating and visualising a tree
-We can create a simple random tree using the function rtree():
+We can create a simple random tree using the function `rtree()`:
 
 ```r
 tree <- rtree(10)
@@ -83,7 +83,10 @@ numbers represent branch lengths
 
 # Exploring the tree structure
 Let's inspect the object:
+
+```r
 tree
+```
 
 You should see information about:
 
@@ -111,7 +114,7 @@ C 6 6 0
 
 These values represent evolutionary distances between taxa.
 
-Removing taxa
+# Removing taxa
 Sometimes we want to prune a tree:
 
 ```r
@@ -135,8 +138,9 @@ Rooting changes the interpretation of evolutionary relationships.
 Remove two species from a tree and compare the resulting topology.
 
 Visualising trees with ggtree
-The plot() function is simple but limited.
-The ggtree package allows more flexible and publication-quality figures.
+The `plot()` function is simple but limited.
+
+The `ggtree` package allows more flexible and publication-quality figures.
 
 # Basic visualisation
 
@@ -146,7 +150,7 @@ ggtree(tree)
 
 This creates a tree using the grammar of graphics.
 
-Adding tip labels:
+# Adding tip labels:
 
 ```r
 ggtree(tree) +  
@@ -192,7 +196,7 @@ In R, you can get help using:
 ?ggtree
 ```
 
-Errors are normal — read them carefully and try to understand what is missing
+Errors are normal, read them carefully and try to understand what is missing.
 
 
 Always check your objects:
