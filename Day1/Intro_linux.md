@@ -41,7 +41,7 @@ Another way is to type `-h` or `--help` after the command or program we want to 
 
 ## Navigating and working in the filesystem
 
-The nested hierarchy of folders and files on your computer is called the filesystem. When we use the computer, we are used to clicking on the folder or the file we want to open. On the terminal, we cannot do that with a click, but we need to navigate and access the folder (we normally refer to them as directories) we want to open with specific commands. 
+The nested hierarchy of folders and files on your computer is called the filesystem. When we use the computer, we are used to click on the folder or the file we want to open. On the terminal, we cannot do that with a click, but we need to navigate and access the folder (we normally refer to them as directories) we want to open with specific commands. 
 
 All directories are nested within a previous directory, and you can also have multiple directories in the same location, as you would have, for example, different folders in your Finder app. 
 
@@ -102,20 +102,126 @@ E.g. if you type `head -n 30 chicken.faa` you will visualise the first 30 lines 
 A similar concept can be applied to `tail`, where it allows you to check the last part of the file. 
 What would you type to check the last 20 lines of the `chicken.faa` file?
 
+<details>
+  <summary>Need help?</summary>
+  
+```
+e.g. tail -n chicken.faa
+```
+</details>
+
 ## Editing files
 
-The are several text editors you can use to edit a file or a script. One of the easiest to use in `nano`. 
+The are several text editors you can use to edit a file or a script. One of the easiest to use is `nano`. You can start edit the file by just typing the command and the name of the file you want to edit, or if you want to write a new file just type nano followd by the name you want to give to your file.
 
 ```
 nano <name-file>
 ```
-Once opened, you can look at it, you can move around with the cursor, write, paste, copy, etc, etc. Once done, you can ext `nano` with `ctrl + x`. If the file has been modified, `nano` will ask if you want to save it, and you say yes by typing `y`. The program will then quit, and you will find the file in the directory. 
+Once opened, you can move around with the cursor, write, paste, copy, etc, etc. Once done, you can ext `nano` with `ctrl + x`. If the file has been modified, `nano` will ask if you want to save it, and you say yes by typing `y`. The program will then quit, and you will find the file in the directory. 
 
-## Wildcards and pattern search
+## Wildcards and Pattern Search
 
+Vwery often in bioinformatics, we need to run the same command hundreds of times on hundred of files. Wildcards are special characters used to match filenames or text patterns in Unix.
 
+Common wildcards:
 
-## Piping and redirection
+- `*` → matches any number of characters
+- `?` → matches a single character
+- `[]` → matches one character from a set
+
+## Examples
+
+List all `.txt` files:
+
+```bash
+ls *.txt
+```
+
+Match files like `data1.csv` or `dataA.csv`:
+
+```bash
+ls data?.csv
+```
+
+Match `sample1.fa`, `sample2.fa`, and `sample3.fa`:
+
+```bash
+ls sample[123].fa
+```
+
+Pattern searching inside files is commonly done with `grep`.
+
+Find lines containing the word “gene”:
+
+```bash
+grep "gene" annotations.gff
+```
+
+Ignore uppercase/lowercase:
+
+```bash
+grep -i "atg" sequences.fa
+```
+
+Show line numbers:
+
+```bash
+grep -n "exon" genes.gff
+```
+
+Search for “ATPase” in all `.txt` files:
+
+```bash
+grep "ATPase" *.txt
+```
+
+---
+
+# Piping and Redirection
+
+Unix allows commands to work together using pipes and redirection.
+
+## Redirection
+
+`>` sends output to a file:
+
+```bash
+ls > files.txt
+```
+
+`>>` appends output instead of overwriting:
+
+```bash
+echo "new line" >> notes.txt
+```
+
+`<` uses a file as input:
+
+```bash
+sort < names.txt
+```
+
+## Pipes
+
+The pipe symbol `|` sends the output of one command into another command.
+
+Count how many files are in the directory:
+
+```bash
+ls | wc -l
+```
+
+Show the first matching lines containing “gene”:
+
+```bash
+grep "gene" annotations.gff | head
+```
+
+Count FASTA sequences by counting headers:
+
+```bash
+cat proteins.fa | grep ">" | wc -l
+```
 
 
 
