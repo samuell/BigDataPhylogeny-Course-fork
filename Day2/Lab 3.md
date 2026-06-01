@@ -1,4 +1,5 @@
 #INTRODUCTION
+
 In this practical session we will learn and work on the most important steps of a phylogenetic reconstruction pipeline. The pipeline we will work with consists of three main steps: 
   1) multiple sequence alignment (MSA), 
   2) alignment trimming, and 
