@@ -7,17 +7,6 @@ In this practical session we will learn and work on the most important steps of 
 
 The outcome of this methodological pipeline is a phylogenetic tree which we will be able to inspect to assess its robustness and the phylogenetic relationships between the sequences represented.
 
-## 1. Alignment
-The alignment is a useful tool to verify that we are comparing homologous positions in our sequences. Once you have some certainty that the sequence set belongs to genes that have a common ancestry 
-(i.e., they are homologous, all descend from a given ancestral gene), the alignment is also important because it allows the identification of homologous sites between sequences. A molecular phylogeny 
-can be reconstructed by looking at the similarities and differences between the aligned sequences on each site. There are several alignment methods, from basic to progressive algorithms. In this section, 
-we will focus on what should be inspected from a multiple sequence alignment to ensure a reliable phylogenetic inference process.
-We should be aware of the fact that alignments are rarely perfect. Below we can see two examples of this:
-
-
-Example A. An example of a shifted fragment. It is caused by the falsely homologous positions in the green columns that are highlighted in red (threonine, T).
-
-
 ### Objectives
 1. Manipulate and align homologous sequences
 2. Obtain definitive matrices for each gene (gene family) and concatenate them for subsequent phylogenetic analyses
@@ -32,4 +21,41 @@ It is freely distributed and you can obtain the latest version (12.1) at: https:
 The data is in FASTA format.
 
 You can download them from the folder "sequences".
+
+## 1. Alignment
+The alignment is a useful tool to verify that we are comparing homologous positions in our sequences. Once you have some certainty that the sequence set belongs to genes that have a common ancestry 
+(i.e., they are homologous, all descend from a given ancestral gene), the alignment is also important because it allows the identification of homologous sites between sequences. A molecular phylogeny 
+can be reconstructed by looking at the similarities and differences between the aligned sequences on each site. There are several alignment methods, from basic to progressive algorithms. In this section, 
+we will focus on what should be inspected from a multiple sequence alignment to ensure a reliable phylogenetic inference process.
+We should be aware of the fact that alignments are rarely perfect. Below we can see two examples of this:
+
+
+#### Example A. An example of a shifted fragment. It is caused by the falsely homologous positions in the green columns that are highlighted in red (threonine, T).
+<img width="932" height="358" alt="image" src="https://github.com/user-attachments/assets/87a4511d-5a0a-40ff-bf16-0e0247d831b5" />
+
+### Example B. Indels (insertions and deletions) can complicate the alignment process. In this example, a single insertion has caused a misalignment of multiple sites in one of the sequences.
+<img width="445" height="411" alt="image" src="https://github.com/user-attachments/assets/898deb0d-d3e6-4bde-b2c0-b8da55cca5da" />
+
+
+## 2. Trimming
+Phylogenetic reconstruction is a process that can require several computational resources. Moreover, it is very likely that not every position will be informative. Thus, it is important to remove positions that do not add enough information to the alignment but add noise instead. There are two main methods: 1) checking the proportion of gaps for a given alignment position (e.g., trimAl software); and 2) checking the entropy associated with each position (e.g., BMGE software). In some cases, gappy regions in the alignment can include interesting information such as a protein domain that could have evolved de novo in a small subset of species.
+
+<img width="693" height="236" alt="image" src="https://github.com/user-attachments/assets/28b54703-62e4-4e3c-b6a0-05cf5b7f0afc" />
+
+## 3. Phylogenetic tree inference
+Once we have a good alignment (and have trimmed it, if needed), we can infer the phylogenetic relationships between the aligned sequences. This reconstruction consists of grouping sequences by similarity and inferring the branch lengths, which is an estimation of the number of substitutions per site under a given evolutionary model.
+
+It is important to differentiate between a species tree and a gene tree. A species tree aims to represent the divergence process between a set of species, while a gene tree aims to represent the evolutionary history of a given gene family. Gene trees often differ from the species tree due to the occurrence of gene duplications, gene losses or horizontal gene transfer events during the evolution of the gene family. In this particular session, we will focus on reconstructing a gene tree. In future sessions we will discuss species tree reconstruction.
+
+Once the phylogenetic tree has been reconstructed, we can inspect the topology to perform inferences about the evolutionary history of the gene family. For instance, if the sequences that descend from a given node in the tree belong to the same species, the most plausible explanation is that this node of the tree is representing a recent duplication that occurred in the evolutionary path towards this species.
+
+## 4. Tree support and root
+Bootstrapping is the most used statistical tool to measure the consistency of the recovered tree. Briefly, this consists of randomly subsampling the alignment sites multiple times (usually >= 100 times) and re-infer a phylogeny from each subsampled alignment. The bootstrap support of every clade in the phylogeny is measured by checking the fraction of bootstrapped trees that recovered each clade.
+
+<img width="940" height="413" alt="image" src="https://github.com/user-attachments/assets/7d6c3513-7258-44be-a65e-ccd5bb63d508" />
+(Yang and Rannala, 2012, www.doi.org/10.1038/nrg3186)
+
+The interpretation of a phylogenetic tree often requires us to root it. The root can be set by adding a group of sequences (outgroup sequences) belonging to species that are close enough but do not belong to our group of interest (ingroup); this method is known as outgroup rooting. A less optimal choice is to root the tree at the branch that is in the middle of the most distant path between two tips (midpoint rooting).
+
+
 
