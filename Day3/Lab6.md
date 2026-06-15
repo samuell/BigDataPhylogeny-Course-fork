@@ -40,3 +40,8 @@ Python 3.x with ete3.
   ```
 
 - Mapping: A "mapping.txt" file that connects sequence names with species names (format: species:gene1,gene2).
+
+
+```
+generax --families families.txt --species-tree S_tree.nwk --prefix output --rec-model UndatedDTL --strategy RESOLVE
+```
