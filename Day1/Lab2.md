@@ -1,41 +1,43 @@
-# LAb 2 Inferring Orthology
+# Lab 2 Inferring Orthology
 
-Introduction to UNIX-Linux. OrthoFinder. Output interpretation. 
+OrthoFinder.
+ Orthofinder output interpretation.  MAFFT alignment, trimming (Trimal). Alignment visualisation (JalView). 
+
 
 
 ## Objective and data
 
+We are ready to start our first phylogenomic study.
+We want to study the evolution of molluscs, based on this [paper](https://www.science.org/doi/10.1126/science.ads0215)
 
-Let's start by cloning this repository. The starting data can be found in the `vertebrate_proteomes` folder.
+Due to time and computational constrains, we will work on a subset of this dataset. We will focus on 20 proteomes.
+
+First we connect to the server
+!!!ADD CONNECTION AMAZON CLUSTER!!!
+(upload fasta files so they can copy in their repo)
+```
+#Copy the proteomes folder in your own personal folder 
+cp BigDataPhylogeny/proteomes ~/.
 
 ```
-# clone repository, data, and software
-git clone https://github.com/iirisarri/CrashCourse-Phylogenomics.git
 
-# Copy software in GitHub to your local software folder so everything it's in the same location
-cp CrashCourse-Phylogenomics/software/* ~/Desktop/software
-
-# Download SeaView
-wget https://doua.prabi.fr/software/seaview_data/seaview5.tgz
-tar zxvf seaview5.tgz
-```
-
-**We will start from a set of 20 proteins from up to 23 species of vertebrates. You can find them in the folder `Orthogroup_Sequences`.**
-
-
-## Inferring ortholog groups (optional)
-
-If you want to know how we obtained the 20 groups of homologous proteins, there is no mystery. We started from a set of proteins annotated in 23 species of vertebrates, which you can access in `intermediate_results/0_Vertebrate_proteomes`
+## Inferring ortholog groups
 
 To identify homologs among all the proteins, we used [OrthoFinder](https://github.com/davidemms/OrthoFinder) with default parameters, just providing the folder containing the proteome files.
 
+First we need to activate the conda env with Orthofinder
+
 ```
-orthofinder -f vertebrate_proteomes
+conda activate Orthofinder
+```
+This is a virtual environment, with different softwares installed that will help us running Orthofinder and all its dependencies.
+If you want to know more about conda you can have a look at the [cheat sheet here](https://docs.conda.io/projects/conda/en/4.6.0/_downloads/52a95608c49671267e40c689e0bc00ca/conda-cheatsheet.pdf).
+
+Now we are ready to infer our orthologous genes, it will take a while to run. Lunch it and please keep going with the tutorial, while it runs to completion. We will go back to it at the end of this practical session.
+```
+orthofinder -a 8 -f /user/work/yp19290/BigData_physalia/Proteomes 
 ```
 
-Look for Orthofinder's results in your `vertebrate_proteomes` folder. A bunch of interesting information is contained there. The Orthogroups can be found in `Orthogroup_Sequences`. Each file corresponds to one orthogroup ("gene") containing one sequence per species.
-
-Let's check what the orthogroups look like.
 
 <details>
   <summary>Need help?</summary>
@@ -61,6 +63,13 @@ Don't forget to check the output: is your command doing what you want?
 
 
 **NOTE ABOUT ORTHOLOGY**: Ensuring orthology is a difficult issue and often using a tool like Orthofinder might not be enough. Paralogy is a tricky business! Research has shown (e.g. [here](https://www.nature.com/articles/s41559-017-0126) [here](https://academic.oup.com/sysbio/article/71/1/105/6275704?login=false) or [here](https://academic.oup.com/mbe/article/36/6/1344/5418531)) that including paralogs can bias the phylogenetic relationship and molecular clock estimates, particularly when the phylogenetic signal is weak. Paralogs should always be removed before phylogenetic inference. But identifying them can be difficult and time-consuming. One could build single-gene trees and look for sequences producing extremely long branches or clustering outside of the remaining sequences. [Automatic pipelines](https://github.com/fethalen/phylopypruner) also exist.
+
+
+## Comparing trees
+
+ Reading and comparing trees (same species, different topologies). Identifying monophyly, paraphyly, polyphyly, sister groups, incongruences, etc.
+
+
 
 
 ## Pre-alignment and quality filtering
