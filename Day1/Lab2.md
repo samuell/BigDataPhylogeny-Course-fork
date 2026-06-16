@@ -37,65 +37,74 @@ Now we are ready to infer our orthologous genes, it will take a while to run. Lu
 ```
 orthofinder -a 8 -f /user/work/yp19290/BigData_physalia/Proteomes 
 ```
-
-
-<details>
-  <summary>Need help?</summary>
-  
-```
-e.g. less -S OG0000006.fa
-```
-</details>
-
-
-You will see that sequences are named `Genus_species_GENE_XXXX`. To concatenate genes at a later stage, sequences of the same taxa need to have uniform names. Thus, we can remove the gene names now. Can you simplify current names to being `Genus_species`?
-
-<details>
-  <summary>Need help?</summary>
-  
-```
-for f in *fa; do sed -E '/>/ s/_GENE.+//g' $f > out; mv out $f; done
-# Explanation: in headers (lines starting with ">"), remove everything after "_GENE"
-```
-</details>
-
-Don't forget to check the output: is your command doing what you want?
-
-
-**NOTE ABOUT ORTHOLOGY**: Ensuring orthology is a difficult issue and often using a tool like Orthofinder might not be enough. Paralogy is a tricky business! Research has shown (e.g. [here](https://www.nature.com/articles/s41559-017-0126) [here](https://academic.oup.com/sysbio/article/71/1/105/6275704?login=false) or [here](https://academic.oup.com/mbe/article/36/6/1344/5418531)) that including paralogs can bias the phylogenetic relationship and molecular clock estimates, particularly when the phylogenetic signal is weak. Paralogs should always be removed before phylogenetic inference. But identifying them can be difficult and time-consuming. One could build single-gene trees and look for sequences producing extremely long branches or clustering outside of the remaining sequences. [Automatic pipelines](https://github.com/fethalen/phylopypruner) also exist.
+It will take 40 minutes to run, let it run, you will go back to the output later.
 
 
 ## Comparing trees
 
+ The main output of a phylogenomic study is a tree, so reading trees correctly is fundamental. 
+ 
+ Here you have two competing topologies with the same species. 
+
+<img Nosenko>
+
+- List at least 3 differences you can see
+- Can you identify the paraphyletic group?
+
+- Is Metazoa monophyletic in these trees?
+
+<img Simple tree>
+
+- Can you select which branches could be paraphyletic?
+
+- Can you identify a polyphyly group?
+
+- Which topology is correct?
+
+
+
+
+ 
  Reading and comparing trees (same species, different topologies). Identifying monophyly, paraphyly, polyphyly, sister groups, incongruences, etc.
 
-
+Check if Orthofinder is still running, if it has stopped move to the next section of the tutorial.
 
 
 ## Pre-alignment and quality filtering
+Orthofinder is a very powerful tool, but can be easily mislead users to approach it as a black box.
 
+Check the output by exploring all the different folders that has created. 
+In our case, the one we care the most is `/BigData_physalia/Proteomes/OrthoFinder/Results_Jun03/Single_Copy_Orthologue_Sequences` 
 
-Often, transcriptomes and genomes have stretches of erroneous, non-homologous amino acids or nucleotides, produced by sequencing errors, assembly errors, or errors in genome annotation. But until recently, these type of errors had been mostly ignored because no automatic tool could deal with them.
+If you have good quality genomes, normally you will end up with a set of genes that orthofinder has identified as single copy orthologs (i.e. true orthologs) and you could ideally start you analysis from these set of genes. Supposedely, these genes do not contain paralogs. 
+In case you are not so lucky (especially when using a lot of transcriptomes), most likely you will have to fish out you genes from the `Orthogroups` of `Orthologues` folders.
 
-We will use [PREQUAL](https://academic.oup.com/bioinformatics/article/34/22/3929/5026659?login=true), a software that takes sets of (homologous) unaligned sequences and identifies sequence stretches (amino acids or codons) sharing no evidence of (residue) homology, which are then masked in the output. Note that homology can be invoked at the level of sequences as well as of residues (amino acids or nucleotides). 
-
-Running PREQUAL for each set orthogroup is easy:
-```sh
-for f in *fa; do prequal $f ; done
-```
-The filtered (masked) alignments are in .filtered, whereas .prequal contains relevant information such as the number of residues filtered.
-
+Here we were lucky enough that we have retrieve single copies, we will need to align them and infer the trees.
 
 ## Multiple sequence alignment
 
+Copy the fasta files in a new directory in the home directory
+
+```sh
+mkdir Mollusca_orthologs
+cd Mollusca_orthologs
+
+cp /OrthoFinder/Results_Jun03/Single_Copy_Orthologue_Sequences/*fas .
+```
+
+You should now have all the fastas in the repository. Check with `ls *fas | wc -l `
+it should tell you how many you have.
 
 The next step is to infer multiple sequence alignments from orthogroups. Multiple sequence alignments allow us to *propose* which amino acids/ nucleotides are homologous. A simple yet accurate tool is [MAFFT](https://mafft.cbrc.jp/alignment/server/).
 
 We will align gene files separately using a for loop:
 
 ```
-for f in *filtered; do mafft $f > $f.mafft; done
+for f in *fas; do mafft $f > $f.mafft; done
 ```
+
+To check if all your fastas have aligned count how many *.mafft files have been created.
+
 
 
 ## Alignment trimming
@@ -103,15 +112,20 @@ for f in *filtered; do mafft $f > $f.mafft; done
 
 Some gene regions (e.g., fast-evolving) are difficult to align and thus positional homology can be uncertain. It is unclear (i.e., problem-specific) whether trimming suspicious regions [improves](https://academic.oup.com/sysbio/article/56/4/564/1682121) or [worsens](https://academic.oup.com/sysbio/article/64/5/778/1685763) tree inference. However, gently trimming very incomplete positions (e.g. with >90% gaps) will speed up computation in the next steps without a significant loss of phylogenetic information.
 
-To trim alignment positions we can use [BMGE](https://gensoft.pasteur.fr/docs/BMGE/1.12/BMGE_doc.pdf) but several other software are also available.
+To trim alignment positions we can use [TrimAl](https://trimal.readthedocs.io/en/latest/) but several other software are also available.
 
 
 ```
-for f in *mafft; do java -jar ../software/BMGE.jar -i $f -t AA -of $f.bmge ; done
+for a in *.mafft;
+
+	do trimal -in $a -out $a.trim  -fasta -gappyout;
+
+done
 
 ```
 
 While diving into phylogenomic pipelines, it is always advisable to check a few intermediate results to ensure we are doing what we should be doing. Multiple sequence alignments can be visualized in [SeaView](http://doua.prabi.fr/software/seaview) or [AliView](https://github.com/AliView/AliView). Also, one could have a quick look at alignments using command line tools (`less -S`).
+
 
 
 ## Concatenate alignment

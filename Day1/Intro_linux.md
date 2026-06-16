@@ -87,28 +87,14 @@ Ok now we have the basics to navigate the filesystem. Let's see how to work with
 
 Most times, we need to visualise the files. To do so, there are different commands we can use. `less` is very useful; it loads the file you want to visualise, and you can "scroll" the file by hitting the space bar or actually scrolling with the mouse. The advantage of `less` is that it loads in the memory temporarily only the section of the file you are looking at, meaning that it's handy to look at very large files. 
 
-In the phylogenomics tutorial, at one point, you will have to visualise the `chicken.faa` file. Navigate to the directory and use `less` to view it.
-
-Example
-```
-less chicken.faa
-```
-What is in the file? Try to scroll the file. To exit just press `q`.
 
 Two other useful commands are `head` and `tail` 
 As the names might suggest, `head` shows you the first part of the file. With the flag `-n`, you can specify how many lines you want to see of the file. 
-E.g. if you type `head -n 30 chicken.faa` you will visualise the first 30 lines of that file.
+E.g. if you type `head -n 30 <file-name>` you will visualise the first 30 lines of that file.
 
 A similar concept can be applied to `tail`, where it allows you to check the last part of the file. 
-What would you type to check the last 20 lines of the `chicken.faa` file?
+What would you type to check the last 20 lines of the `chicken.fa` file?
 
-<details>
-  <summary>Need help?</summary>
-  
-```
-e.g. tail -n chicken.faa
-```
-</details>
 
 ## Editing files
 
@@ -129,12 +115,12 @@ Common wildcards:
 - `?` → matches a single character
 - `[]` → matches one character from a set
 
-## Examples
+## Examples that you could use in one of your local folder on your machine
 
-List all `.txt` files:
+List all `.fasta` files:
 
 ```bash
-ls *.txt
+ls *.fasta
 ```
 
 Match files like `data1.csv` or `dataA.csv`:
@@ -222,6 +208,9 @@ Count FASTA sequences by counting headers:
 ```bash
 cat proteins.fa | grep ">" | wc -l
 ```
+Or 
+```bash
+grep -c ">" proteins.fa 
 
 
 
