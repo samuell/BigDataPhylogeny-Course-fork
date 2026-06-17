@@ -1,0 +1,1 @@
+Here you'll find the output of OrthoFinder with the most important folders. In the ```Single-Copy-Sequences``` folder you will find the gene families that you will need to use for Lab 6 on DTL and ASR.
