@@ -23,20 +23,20 @@ The main objective is that you learn to use probabilistic modeling tools to reco
 ## DTL analysis
 ### Software: 
 GeneRax
-IQ-TREE (to generate the initial tree), 
+IQ-TREE (to generate the gene trees), 
 Python 3.x with ete3.
 
 ### Required data:
 
-- Species tree (S): A rooted Newick file (species_tree.nwk).
+- Species tree (S): A rooted Newick file (Mollusk_SPP_tree.tre).
 
 - Gene families (G): For each family you need:
 
-    ".fasta": Sequence alignment.
+    ".fa": Sequence alignment. As starting data we will use the single-copy orthologous families obtained with OrthoFinder (Single_Copy_Orthologue_Sequences).
 
     ".nwk": "Raw" gene tree obtained with:
   ```
-  iqtree -s family.fasta -m LG+G
+  iqtree -s family.fa -m LG+G
   ```
 
 - Mapping: A "mapping.txt" file that connects sequence names with species names (format: species:gene1,gene2).
