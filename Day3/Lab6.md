@@ -95,12 +95,17 @@ This contains MAFFT (alignment), RAxML-NG (gene tree inference and ancestral seq
   Before any tree can be built, the sequences need to be aligned column-by-column so that homologous positions line up.
 
   ```bash
-  mkdir -p aln
-  for f in *.fa; do mafft --auto $f > aln/${f%.fa}_aln.fa; done
+  mkdir -p /home/lab6/data/core_gene_set/aln
+  mkdir -p /home/lab6/data/dtl_engineered/aln
+  mkdir -p /home/lab6/results
+
+  # move to the corresponding folder and align:
+  for f in *.fasta; do mafft --auto $f > aln/${f%.fa}_aln.fa; done
+  for f in *.fasta; do mafft --auto $f > aln/${f%.fa}_aln.fa; done
   ```
 
-  This runs MAFFT with its automatic mode (`--auto`) on every FASTA file in `Data/Lab6/core_gene_set/` and `Data/Lab6/dtl_engineered/`, writing the alignments to matching `aln/` subfolders. Open one or two of the 
-  resulting `.aln.fa` files in a text editor or alignment viewer (Jalview, AliView, or even just `less` in the terminal) and look at how similar the sequences already are — these genes are highly conserved across hundreds
+  This runs MAFFT with its automatic mode (`--auto`) on every FASTA file in `data/lab6/core_gene_set/` and `data/lab6/dtl_engineered/`, writing the alignments to matching `aln/` subfolders. Open one or two of the 
+  resulting `_aln.fa` files in a text editor or alignment viewer (Jalview, AliView, or even just `less` in the terminal) and look at how similar the sequences already are — these genes are highly conserved across hundreds
   of millions of years of divergence in the real organisms they came from.
 
   #### 4.3 Step 2 — Run GeneRax
