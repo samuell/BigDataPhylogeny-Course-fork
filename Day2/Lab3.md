@@ -46,9 +46,9 @@
     cat model_test.iqtree | grep -A5 'Best-fit model' # The best model according to BIC is printed here.
     ```
   *TIP*
-    The .iqtree log file contains the full model comparison table.
-    Look for lines labelled 'AIC', 'AICc', and 'BIC' — they may differ! Always justify which criterion you use.
-    Common best-fit models for chloroplast data: GTR+F+I+G4, TVM+F+G4, SYM+I+G4.
+  The '.iqtree' log file contains the full model comparison table.
+  Look for lines labelled 'AIC', 'AICc', and 'BIC' — they may differ! Always justify which criterion you use.
+  Common best-fit models for chloroplast data: GTR+F+I+G4, TVM+F+G4, SYM+I+G4.
 
   #### Understanding the model notation
   | Symbol	| Meaning |
