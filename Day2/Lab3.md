@@ -25,9 +25,11 @@
   biases in topology and branch lengths; an overly complex model wastes degrees of freedom. Model selection balances fit and complexity.
 
   ### 1.2. Key information criteria
-  Criterion	Description & preference
-AIC (Akaike)	Penalises each free parameter by 2. Tends to select slightly richer models. Use when prediction is the goal.
-AICc	AIC corrected for small sample size. Preferred when n / k < 40 (n = sites, k = parameters).
-BIC (Bayesian)	Stronger penalty (ln n per parameter). Tends to prefer simpler models. Recommended for most phylogenomic datasets.
+  | Criterion	| Description & preference |
+  | --- | --- |
+  | AIC (Akaike)	| "Penalises each free parameter by 2. Tends to select slightly richer models. Use when prediction is the goal." |
+  | AICc	| "AIC corrected for small sample size. Preferred when n / k < 40 (n = sites, k = parameters)." |
+  | BIC (Bayesian)	| "Stronger penalty (ln n per parameter). Tends to prefer simpler models. Recommended for most phylogenomic datasets." |
+
 
 
