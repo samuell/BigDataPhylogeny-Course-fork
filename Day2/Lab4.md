@@ -54,7 +54,7 @@ Look briefly at the full explanation of the control file [here](https://github.c
 
 Look at the clock options and at the seq type.
 
-Copy the section above in a new file called `mcmctree.ctl` with nano. Save it and now you are ready to infer the prior.
+Copy the section below in a new file  with nano `nano mcmctree.ctl`. Save it and now you are ready to infer the prior.
 
 ```sh
 seed = -1
@@ -139,8 +139,33 @@ We can also check the calibrations from the Prior that we used on the nodes, the
 # installed the `mcmc3r` R package you
 # can run the following commands
 #
+####Density plot
 
-library (mcmc3r)
+devtools::install_github("dosreislab/mcmc3r")
+library(mcmc3r)
+library(ape)
+
+#First we can visualise the nodes on the tree
+# Read tree
+tree <- read.tree("MCMCtree_mollusca.rooted.calibration.nwk")
+
+# Remove branch lengths
+tree$edge.length <- NULL
+
+# Write tree without branch lengths
+write.tree(tree, file = "Mollusca_NOBL.tre")
+
+#Root tree
+tr <- read.tree("Mollusca_NOBL.tre")
+tr <- root(tr, outgroup = c("Urechis_unicinctus", "Lingula_anatina"), resolve.root = TRUE)
+
+tr$edge.length <- NULL
+
+write.tree(tr, file = "Mollusca_NOBL_rooted.tre")
+#plot
+plot(tr)
+nodelabels()
+
 #Now we can see the density plots
 # Create 1 row with 3 columns
 # NOTE: The x axis will be reversed (i.e., from
@@ -160,8 +185,6 @@ curve( mcmc3r::dL( x, tL = 542, p = 0.1, c= 1, pL = 0.025),
        xlab = "Time (Mya)", ylab = "Density",
        main = "Mollusca Node 27 | 'L(5.4200,0.1,0.05,1e-300)'" )
 abline( v = c( 0.5, 2 ), col = "#56B4E9" )
-
-
 ```
 ### Full Paml tutorial
 
@@ -170,4 +193,68 @@ The Paml package and MCMCTree are very powerful tools for node dating, however t
 
 
 # Ancestral state estimation
+
+Ok we have our tree, we have estimated when molluscs have diverged, but we want to dig further. We want to know if the last common ancestor of molluscs had a shell. To do so we are going to do an ancestral state estimation using the MK model. 
+We have compiled a little character matrix that you can open in excel, called `shell_matrix.csv`. Have a look at it. For this excercise we have 2 characters:
+- Shell presence or abscence
+- Type of shell 
+
+Look at the character states, when coding for the states remember to always start from 0 (e.g. if I have 2 states only, state A will be 0, and state B will be 1). Missing data are normally coded as '?'. 
+**IMPORTANT** State 0 does not mean no data/missing data. The absence of something (e.g. the shell) is still a character. Not knowing if a species present a charcater has to be coded as missing data and not as an absance.
+
+Ok now we are ready to infer the ancestral state of the LCA of molluscs.
+
+Open Rstudio and follow the script below.
+
+```R
+
+### ASE practical
+
+#install package
+if (!require(remotes)){
+  install.packages("remotes")
+}
+remotes::install_github("evo-palaeo/treesurgeon")
+library(treesurgeon)
+
+#set the working directory appropriately where you have the matrix and the tree
+setwd(path-to-your-folder)
+###load matrix
+matrix <- read.csv("shell_matrix.csv", row.names = 1)
+tp <- get_tip_priors(matrix)
+names(tp) <- colnames(matrix)
+tree <- read.tree("Mollusca_LGC60_BL_rooted.tre")
+
+##We are going to use the MK model, look at the manual to have a better look on how it works
+?fitMk
+
+#This is just a way to visualize rates matrices and see how they change when we increase the states.
+#We have two characters. Shell presence/absence (2 states) and type of shell (5 states)
+?get_index_matrix
+get_index_matrix( states = 2, model = "ER", ordered = T) #with ER model you can see that we can either have state 1 to 2 or state 2 to 1
+
+#matrices for character 2 with 5 states
+get_index_matrix( states = 5, model = "ASYM", ordered = T)
+get_index_matrix( states = 5, model = "ARD", ordered = F)
+get_index_matrix( states = 5, model = "SYM", ordered = F)
+get_index_matrix( states = 5, model = "ER", ordered = F)
+
+#Ancestral state of presence/absence shell. Here we include fitzjhon as root prior (equally prior prob for any of the states, pi = fitzjhon)
+fitERch1 <- fitMk(tree, x = tp$ch1_shell_abs0_pres1, model = "ER", pi="fitzjohn" )
+print(fitERch1)
+ancER <-ancr(fitERch1)
+plot(ancER)
+#What does the plot tell you?
+
+#Now let's do it for the type of shell
+fitARD <- fitMk(tree, x = tp$ch2_shelltype_0noshell_1external_2valves_3internal_4plates, model = "ARD", pi="fitzjohn" )
+print(fitARD)
+ancARD <-ancr(fitARD)
+plot(ancARD)
+
+fitERch2 <- fitMk(tree, x = tp$ch2_shelltype_0noshell_1external_2valves_3internal_4plates, model = "ER", pi="fitzjohn" )
+print(fitERch2)
+ancERch2 <-ancr(fitERch2)
+plot(ancERch2)
+```
 
