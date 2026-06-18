@@ -45,20 +45,20 @@
     ```bash
     cat model_test.iqtree | grep -A5 'Best-fit model' # The best model according to BIC is printed here.
     ```
-    *TIP*
+  *TIP*
     The .iqtree log file contains the full model comparison table.
     Look for lines labelled 'AIC', 'AICc', and 'BIC' — they may differ! Always justify which criterion you use.
     Common best-fit models for chloroplast data: GTR+F+I+G4, TVM+F+G4, SYM+I+G4.
 
   #### Understanding the model notation
-    | Symbol	| Meaning |
-    | --- | --- |
-    | GTR	| General Time Reversible — 6 substitution rate categories, most parameter-rich. |
-    | HKY	| Hasegawa–Kishino–Yano — distinguishes transitions from transversions only. |
-    | +F	| Empirical base frequencies estimated from the data. |
-    | +I	| Proportion of invariable sites. |
-    | +G4	| Gamma-distributed rate variation across sites (4 rate categories). |
-    | +R4	| FreeRate model with 4 categories — more flexible than +G4. |
+  | Symbol	| Meaning |
+  | --- | --- |
+  | GTR	| General Time Reversible — 6 substitution rate categories, most parameter-rich. |
+  | HKY	| Hasegawa–Kishino–Yano — distinguishes transitions from transversions only. |
+  | +F	| Empirical base frequencies estimated from the data. |
+  | +I	| Proportion of invariable sites. |
+  | +G4	| Gamma-distributed rate variation across sites (4 rate categories). |
+  | +R4	| FreeRate model with 4 categories — more flexible than +G4. |
 
   ### 1.4 Questions
   1.	Which model was selected under BIC? Is it the same as AIC?
