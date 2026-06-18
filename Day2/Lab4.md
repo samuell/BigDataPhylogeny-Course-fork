@@ -3,8 +3,24 @@
 For calibrating our phylogeny we will use IQTree3 and MCCMTREE from the Paml package. You can find more informations [here](https://iqtree.github.io/doc/Dating).
 We will calibrate the tree using node dating.
 
+Here are the calibrations we will used on the nodes:
+- B: Uniform distribution
+- L: Cauchy distribution
+
+| Node number |Node | Fossil Age| Calibration |
+| --- | --- | --- | --- | 
+| tn_23| Root | 561 | "B(5.6100,6.0900,1e-300,0.0250)" | 
+|tn_24 |Mollusca | 542 | "L(5.4200,0.1000,0.5000,1e-300)" |
+|tn_25|Aculifera |497 |"L(4.9700, 0.1000, 0.5000, 1e-300)"|
+|tn_26| Polyplacophora |220 |"L(2.2000, 0.1000,0.5000,1e-300)"|
+|tn_41| Cephalopoda |495 |"L(4.9500,0.1000,0.5000|,1e-300)"|
+|tn_37| Scaphopoda |345 |"L(3.4500,0.1000,0.5000,1e-300)"|
+|tn_31| Bivalvia |525 |"L(5.2500,0.1000,0.5000,1e-300)"|
+|tn_34|Origin of Caenogastropoda |405 |"L(4.0500,0.1000,0.5000,1e-300)n"|
+
+
 Log into the server and go to the TimeCalibration folder.
-Part of the Paml packge is now installed in IQTree3, MCMCTREE needs an Hessian matrix to calculate the approximate likelihood. 
+Part of the Paml packge is now installed in IQTree3, MCMCTREE needs an Hessian matrix to calculate the approximate likelihood and infer the divergence times. 
 
 Here is the command:
 
@@ -13,15 +29,16 @@ Here is the command:
 iqtree3 -s FcC_supermatrix.fas -m LG+C60+G -te Mollusca_LGC60_rooted.tree --dating mcmctree --prefix MCMCtree_mollusca
 
 ```
-After running you'll have the Hessian Matrix (.hessian), and the control file to run the prior and the posterior calibration with MCMCTree (.ctl). It takes 11 hr to run, for this reason we have already generated the matrix for you. Here I put a simplified version of the control file, it's better to use this one that the one IQTree generates.
+After running you'll have the Hessian Matrix (.hessian), and the control file to run the prior and the posterior calibration with MCMCTree (.ctl). It takes 11 hr to run, for this reason we have already generated the matrix for you. Here you have a simplified version of the control file (it's better to use this one that the one IQTree generates, as it still under development).
 
-You will have 2 folders `Prior` and `Posterior`
+You will have 2 folders `Prior` and `Posterior`, each with the files needed for the estimates.
 
 ### Estimate the prior
 
 Look at the files present in the Prior directory. 
 
-THe tree with node calibrations is  `MCMCtree_mollusca.rooted.calibration.nwk`, the alignment `MCMCtree_mollusca.dummy.phy`, and the `in.BV` (this is our hessian matrix).
+The tree with node calibrations is  `MCMCtree_mollusca.rooted.calibration.nwk`, the alignment `MCMCtree_mollusca.dummy.phy`, and the `in.BV` (this is our hessian matrix).
+Please open the `MCMCtree_mollusca.rooted.calibration.nwk` in FigTree, by checking the node label section, you can see which nodes have been calibrated.
 
 Have a look at the mcmctree.ctl file below. This is where you specify all the details needed for MCMCTree.
 Pay attention to the `usedata` flag.
@@ -65,6 +82,7 @@ Type:
 ```sh
 mcmctree mcmctree.ctl
 ```
+It should take a couple of minutes, once it's done download the Figtree.tree file you have generted. Load the tree in Figtree, check the node labels and node bar option to see the prior estimates.
 
 ### Posterior distribution
 
@@ -73,7 +91,6 @@ This time we will also specify the clock.
 It is good practice to run multiple chains (e.g. 5) with both clocks, meaning that you should run 5 chains specifying clock =2 for independent rates, and 5 chains specifying clock = 3 for correlated rates. 
 Due to time constrains we will only run one, but in the future, you would just need to change the clock flag and run it multiple times in different folders.
 The global option (clock =1) is biologically unlikely to happen to species that are distantly related, this is because it is unlikely that all genes evolve globally at the same rate.
-
 
 
 Ok now, once again copy the section below and save it in a new mcmctree.ctl file. We will use the independent rate clock (e.g clock = 2) and we will specify usedata = 2
@@ -100,7 +117,57 @@ nsample = 20000
 
 ```
 
+
+Type:
+```sh
+mcmctree mcmctree.ctl
+```
+
+Once this is also done, please check the tree as you did with the Prior.
+Do you notice any difference in the time estimates?
+
+
 ### Convergence and density plots
 
+Download on your computer the `mcmc.txt` file and open it with Tracer, by clicking on the `+` sign. You can check the different factors such as ESS, and the trace plot of your run.
 
-Now we need to 
+We can also check the calibrations from the Prior that we used on the nodes, these plots help visualize how we are interpreting the fossil information and how we are describing the minimum and maximum bound.
+
+
+```R
+# Open R on RStudio and, if you have already
+# installed the `mcmc3r` R package you
+# can run the following commands
+#
+
+library (mcmc3r)
+#Now we can see the density plots
+# Create 1 row with 3 columns
+# NOTE: The x axis will be reversed (i.e., from
+# older to younger) so that it is
+# easier to interpret the calibration densities
+par( mfrow = c( 1, 3 ) )
+##> Plot the uniform calibration for the root
+curve( mcmc3r::dB( x, tL = 560, tU = 609, pL = 1e-300, pU = 0.025 ), 
+       from = 400, to = 700, n = 1e4, xlim = rev( c( 500, 650 ) ),
+       xlab = "Time (Mya)", ylab = "Density",
+       main = "Root | 'B (  5.6000,  6.0900,  0.0000,  0.0250 )'" )
+abline( v = c( 0.06, 0.08 ), col = "#56B4E9" )
+
+##> Plot the soft-bound calibration for node 27 Mollusca
+curve( mcmc3r::dL( x, tL = 542, p = 0.1, c= 1, pL = 0.025),
+       from = 540, to = 600, n = 1e4, xlim = rev( c( 530, 550 ) ),
+       xlab = "Time (Mya)", ylab = "Density",
+       main = "Mollusca Node 27 | 'L(5.4200,0.1,0.05,1e-300)'" )
+abline( v = c( 0.5, 2 ), col = "#56B4E9" )
+
+
+```
+### Full Paml tutorial
+
+The Paml package and MCMCTree are very powerful tools for node dating, however they can be difficult to tackle. If you want a more in depth knowledge plese refer to [this tutorial](https://github.com/abacus-gene/paml-tutorial/tree/main/mcmctree-approxlnL-aa).
+
+
+
+# Ancestral state estimation
+
