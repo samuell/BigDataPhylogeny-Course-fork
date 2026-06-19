@@ -62,6 +62,8 @@
   | +G4	| Gamma-distributed rate variation across sites (4 rate categories). |
   | +R4	| FreeRate model with 4 categories — more flexible than +G4. |
 
+* In this website you'll find information about models: https://iqtree.github.io/doc/Substitution-Models
+  
   ### 1.4 Questions
   1.	Which model was selected under BIC? Is it the same as AIC?
   2.	How many free parameters does the selected model have? (Hint: look at the 'df' column.)
