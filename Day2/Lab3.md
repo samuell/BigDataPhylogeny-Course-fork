@@ -19,19 +19,22 @@
     Data files provided: Mollusca_FcC_supermatrix.fas, alt_topo.nwk (alternative topology).
     All commands assume you are working in the directory where your data files are located.
 
-## 1. Model Selection
-  ### 1.1 Why does the model matter?
+## 1. Matrix concatenation
+
+
+## 2. Model Selection
+  ### 2.1 Why does the model matter?
   Phylogenetic inference requires a probabilistic model of sequence evolution. The model describes how nucleotides (or amino acids) change over time. Choosing a model that is too simple can cause systematic 
   biases in topology and branch lengths; an overly complex model wastes degrees of freedom. Model selection balances fit and complexity.
 
-  ### 1.2. Key information criteria
+  ### 2.2. Key information criteria
   | Criterion	| Description & preference |
   | --- | --- |
   | AIC (Akaike)	| Penalises each free parameter by 2. Tends to select slightly richer models. Use when prediction is the goal. |
   | AICc	| AIC corrected for small sample size. Preferred when n / k < 40 (n = sites, k = parameters). |
   | BIC (Bayesian)	| Stronger penalty (ln n per parameter). Tends to prefer simpler models. Recommended for most phylogenomic datasets. |
 
-  ### 1.3 Running ModelFinder in IQ-Tree
+  ### 2.3 Running ModelFinder in IQ-Tree
   IQ-TREE integrates ModelFinder, which evaluates hundreds of substitution models efficiently. We will use the matrix generated in the previous practical that is already aligned and curated.
 
   ```bash
@@ -64,16 +67,16 @@
 
 * In this website you'll find information about models: https://iqtree.github.io/doc/Substitution-Models
   
-  ### 1.4 Questions
+  ### 2.4 Questions
   1.	Which model was selected under BIC? Is it the same as AIC?
   2.	How many free parameters does the selected model have? (Hint: look at the 'df' column.)
   3.	What does the proportion of invariable sites (+I value) tell you about the alignment?
 
-## 2. Maximum Likelihood Tree Inference
-  ### 2.1  The ML principle
+## 3. Maximum Likelihood Tree Inference
+  ### 3.1  The ML principle
   Maximum Likelihood (ML) inference finds the tree topology and branch lengths that maximise the probability of observing the data given the model. IQ-TREE uses stochastic perturbations (random NNI moves) from multiple      starting trees to escape local optima.
 
-  ### 2.2 Run ML inference with the best-fit model and ultrafast bootstrap.
+  ### 3.2 Run ML inference with the best-fit model and ultrafast bootstrap.
   You already inferred a ML tree in the previous practical. Let's consolidate what you learnt:
 
   ```bash
@@ -105,7 +108,7 @@
   iqtree -s Mollusca_FcC_supermatrix.fas -m TESTMERGE -bb 1000 -nt AUTO --prefix model_ml
   ```
 
-  ### 2.3 Non-parametric vs ultrafast bootstrap
+  ### 3.3 Non-parametric vs ultrafast bootstrap
 
   | Feature	| Non-parametric (-b) vs Ultrafast (-B) |
   | --- | --- |
@@ -114,10 +117,11 @@
   | Threshold	| ≥ 70 (non-param) ≈ ≥ 95 (ultrafast) as a rough guide. Always report which you used. |
   | Recommendation	| Ultrafast (-B 1000) + -bnni for most studies. Non-parametric for small datasets. |
 
-  ### 2.4 Questions
+  ### 3.4 Questions
   4.	What is the log-likelihood score of your best ML tree?
   5.	How many parsimony-informative sites does the alignment contain? (Look in the .iqtree report.)
   6.	Would you expect the tree topology to change if you used a simpler model (e.g., JC)? Why?
+
 
 
 ## 3. Topology tests
@@ -166,6 +170,14 @@
   8.	Can the alternative topology be rejected at the 5% significance level?
   9.	What biological conclusion can you draw from the topology test result?
 
+
+## 5. Optional: Bayesian Inference
+
+  ### 5.1 Phylobayes
+
+  ### 5.2 Checking convergence
+
+  
 ## 4. Support methods: Bootstrap vs Posterior Probability
   ### 4.1 Conceptual comparison
   Both bootstrap support (BS) and Bayesian posterior probability (PP) measure confidence in a bipartition (clade), but they estimate fundamentally different quantities:

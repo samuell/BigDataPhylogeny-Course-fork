@@ -1,10 +1,5 @@
 # Lab 2 Inferring Orthology
 
-OrthoFinder.
- Orthofinder output interpretation.  MAFFT alignment, trimming (Trimal). Alignment visualisation (JalView). 
-
-
-
 ## Objective and data
 
 We are ready to start our first phylogenomic study.
@@ -13,17 +8,18 @@ We want to study the evolution of molluscs, based on this [paper](https://www.sc
 Due to time and computational constrains, we will work on a subset of this dataset. We will focus on 20 proteomes.
 
 First we connect to the server as explained in the instruction. 
+
 ```
 #Copy the proteomes folder in your own personal folder 
 cp /home/ubuntu/Share/Proteomes .
-
 ```
+
 These are the proteomes for the molluscs species we want to infer the phylogeny for.
 To check if you have all of them, go into the directory using `cd` and count how many files you have. You can use `ls * | wc -l`.
 
 We are ready to infer the orthology, let's go to the following section!
 
-## Inferring orthology
+## Orthofinder
 
 To identify homologs among all the proteins, we will use [OrthoFinder](https://github.com/davidemms/OrthoFinder) with default parameters, just providing the folder containing the proteome files.
 
@@ -79,7 +75,7 @@ It will take 40 minutes to run, let it run, you will go back to the output later
 Ok we have now familiarised with trees and tree thinking. It's time to make our own. 
 Let's move on the following section!
 
-## Selecting orthoologs
+## Selecting orthologs
 Orthofinder is a very powerful tool, but can be easily mislead users to approach it as a black box.
 
 If it has finished running, check the output by exploring all the different folders that has created. 
@@ -149,7 +145,7 @@ for i in *trim ;
 
 done
 ```
-It will take around 12 min to run. In the mean time you can familiarise yourself with the outputs of IQTREE and the flags we have used [here](https://iqtree.github.io/doc/Tutorial).
+It will take around 17 min to run. In the mean time you can familiarise yourself with the outputs of IQTREE and the flags we have used [here](https://iqtree.github.io/doc/Tutorial).
 Once the trees are done(you will see several files called `.treefile`), you can download a couple of them on your PC/Mac and read them with FigTree. 
 Check the bootstrap support by selecting the `node label` button on the left and look at the branches, try to see if you notice any long branch.
 
