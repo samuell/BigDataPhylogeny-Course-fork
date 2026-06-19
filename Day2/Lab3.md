@@ -244,6 +244,10 @@
   *File → Export → PDF* (or SVG for editing in Inkscape)
   Avoid PNG for publications, vector formats (PDF, SVG) scale without loss.
 
+  * You can also import an annotation file to change labels or even add colours to your tips.
+  *File → Import Annotations → 'codes.txt'*
+  *Tip Labels → Display: Mollusc names*
+
   ### 5.2 FigTree Panels reference
   | Panel / option	| What it controls |
   | --- | --- |
