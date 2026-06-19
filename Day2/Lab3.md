@@ -264,7 +264,7 @@
   
   * Go to the iTOL website.
     https://itol.embl.de
-    No account needed for basic use; register for free to save trees.
+    - No account needed for basic use; register for free to save trees.
 
   * Upload your tree file.
     Click *'Upload' → drag ml_tree.contree* into the upload box → click 'Upload'
