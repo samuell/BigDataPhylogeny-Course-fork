@@ -285,8 +285,55 @@
     Export panel → SVG (recommended) or PNG
     - SVG can be edited in Inkscape or Adobe Illustrator for final touch-ups.
 
+<img width="1909" height="588" alt="image" src="https://github.com/user-attachments/assets/d2780754-77d6-44bb-9cf6-e76f0ebe3ba9" />
+<img width="412" height="662" alt="image" src="https://github.com/user-attachments/assets/a80769b4-34d3-4d30-bcc0-666d1cfbcf11" />
+<img width="396" height="232" alt="image" src="https://github.com/user-attachments/assets/742ba1e4-a3db-4cc8-bf99-9cd3d43e53a2" />
 
-    
+
+
+  ### 5.4 iTOL annotation file formats
+  
+  | File type	| Purpose and example |
+  | --- | --- |
+  | DATASET_COLORSTRIP	| Colour bar at tip labels. One colour per taxon. Use for taxonomic groups. |
+  | DATASET_BINARY	| Presence/absence matrix. Draws filled/empty circles at tips. |
+  | DATASET_SIMPLEBAR	| Bar chart at tips. Use for quantitative data (e.g. genome size). |
+  | DATASET_TEXT	| Custom text label next to tips. Use for accession numbers, common names. |
+  | DATASET_SYMBOL	| Symbols (circles, squares) at tips or internal nodes. |
+  | TREE_COLORS	| Change branch or label colours, styles, and widths. |
+
+  ### 5.5 Comparing two trees in iTOL
+  * Upload both trees to your iTOL workspace.
+  *Upload 'ml_tree.contree' and 'alt_topo.nwk' separately*
+
+  * Open the first tree, then use 'Compare' mode.
+  In the tree viewer: *Advanced → Compare → select the second tree*
+  - iTOL will highlight nodes that differ between the two topologies.
+
+  * Interpret the differences.
+  - Note which clades are resolved differently and relate this back to your topology test results from Section 3.
+
+  *TIP*
+  * iTOL is ideal for large trees (> 100 taxa) where FigTree becomes slow.
+  * Save your iTOL tree with a free account to get a permanent shareable URL — useful for supplementary materials in publications.
+  * The 'collapse' feature in iTOL lets you fold entire clades to simplify figures.
+
+## 6. General discussion and questions
+Answer the following questions individually or in groups. Be prepared to discuss your answers.
+
+13.	What are the consequences of choosing a substitution model that is too simple for your data? Can you think of a biological example where this matters most?
+
+14.	Your colleague argues that a clade with 100% ultrafast bootstrap support 'must be true'. How would you respond? What factors could still make the clade an artefact?
+
+15.	You have two trees: Tree A (ML, bootstrap = 88%) and Tree B (Bayesian, posterior = 0.99) disagree on the placement of one taxon. How do you decide which to trust? What additional analyses could help?
+
+16.	Explain in your own words the difference between a consensus tree and a single best ML tree. In which situations would you prefer to report each?
+
+17.	Why is it important to apply a topology test when comparing an ML tree to an alternative tree based on morphological data?
+
+18.	A phylogenomic study uses 500 genes but recovers very short internal branches with low bootstrap values. What phylogenetic phenomenon might explain this, and how could you test for it?
+
+
 
 
     
