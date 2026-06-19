@@ -261,7 +261,35 @@
 
 
   ### 5.3 Visualising trees with iTOL
-  
+    * Go to the iTOL website.
+    https://itol.embl.de
+    - No account needed for basic use; register for free to save trees.
+
+    * Upload your tree file.
+    Click *'Upload' → drag ml_tree.contree* into the upload box → click 'Upload'
+    - Newick format ('.treefile', '.nwk', '.tree') is accepted.
+
+    * Click on your tree to open the interactive viewer.
+    Click the tree name in your workspace
+    - The tree opens with a default rectangular layout.
+
+    * Explore display options.
+    Use the top panel: Basic → Unrooted / Circular / Normal | Advanced → Node IDs, Branch lengths
+
+    * Add a colour dataset (metadata annotation).
+    Datasets panel → Click colour strip icon → paste or upload metadata TSV
+    - Format: TAXON_NAME\tCOLOUR (e.g. #FF0000)
+
+    * Export the figure.
+    Export panel → SVG (recommended) or PNG
+    - SVG can be edited in Inkscape or Adobe Illustrator for final touch-ups.
+
+
+    
+
+
+    
+
 
 
 
