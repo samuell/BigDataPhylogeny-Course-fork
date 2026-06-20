@@ -9,7 +9,7 @@ In this tutorial, we will focus on how to read, manipulate and visualise phyloge
 ## Objectives
 * Get comfortable with `RStudio` and `R basics`, install the packages we'll use during the course, and load your very first phylogenetic tree.
 
-> If you already know R well, skim this fast and jump straight to [Section 4](#4.-working-with-phylogenetic-trees). Everyone should run Section 2 (package installation) before the next practical.
+> If you already know R well, skim this fast and jump straight to [Section 4](##-4.-Working-with-phylogenetic-trees). Everyone should run Section 2 (package installation) before the next practical.
 
 ---
 
