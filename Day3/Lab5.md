@@ -46,6 +46,7 @@
   cafe5 -i data/cafe_input.tsv -t data/cafe_tree_ultrametric.nwk -o results/cafe_base
   ```
   *This should run in well under a minute for a dataset this size. Watch the terminal CAFE5 prints its optimization progress as it searches for the best-fitting λ.*
+  
   **Checkpoint**: Open `results/cafe_base/Base_results.txt`:
   ```bash
   cat results/cafe_base/Base_results.txt
@@ -69,9 +70,9 @@
   | File (name may vary slightly) | What it contains |
   |---|---|
   | `*_results.txt` | The headline: model score and estimated λ |
-  | `*_asr.tre` | **A**ncestral **s**tate **r**econstruction — a tree (Nexus format) where every node, including internal/ancestral ones, has an inferred gene copy number attached |
+  | `*_asr.tre` | **A**ncestral **s**tate **r**econstruction: a tree (Nexus format) where every node, including internal/ancestral ones, has an inferred gene copy number attached |
   | `*_clade_results.txt` | Per-branch summary: how many gene families expanded vs. contracted on that branch |
-  | `*_family_results.txt` (or similar — check `*_results.txt` and look for a wider table) | Per-gene-family table with significance values (see below) |
+  | `*_family_results.txt` (or similar, check `*_results.txt` and look for a wider table) | Per-gene-family table with significance values (see below) |
 
   ### 1.4 Find the gene families CAFE5 thinks are interesting
 
