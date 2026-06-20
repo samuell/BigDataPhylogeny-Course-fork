@@ -214,13 +214,9 @@ str(tree)
 
 # Plot it - base R / ape style
 plot(tree)
-
-# Now the same tree with ggtree
-library(ggtree)
-ggtree(tree) + geom_tiplabel()
 ```
 
-Notice: same underlying `phylo` object, two different plotting philosophies. `ape::plot.phylo()` is quick and built-in; `ggtree()` gives you the full `ggplot2` layering system (colors, themes, combining with data) which we'll lean on heavily later in the course.
+**Notice**: same underlying `phylo` object, two different plotting philosophies. `ape::plot.phylo()` is quick and built-in; `ggtree()` gives you the full `ggplot2` layering system (colors, themes, combining with data) which we'll lean on heavily later in the course.
 
 <img width="1341" height="762" alt="image" src="https://github.com/user-attachments/assets/267bef6c-839d-4b01-bdb5-f72fcb11530e" />
 
@@ -238,6 +234,7 @@ tree <- read.tree(text="((A:1,B:1):2,C:3);")
 plot(tree)
 ```
 In this tree:
+<img width="1275" height="727" alt="image" src="https://github.com/user-attachments/assets/079f7f21-3f0b-4ae5-90d7-09e013a92c7c" />
 
 
 - A, B, and C are taxa
@@ -255,6 +252,7 @@ You should see information about:
 - number of nodes
 - branch lengths
 - labels
+- root
 
 ### 6.2 Basic operations on trees
 #### 6.2.1 Distances between taxa
@@ -281,6 +279,7 @@ Sometimes we want to prune a tree:
 pruned <- drop.tip(tree, "A")
 plot(pruned)
 ```
+<img width="1258" height="637" alt="image" src="https://github.com/user-attachments/assets/a1fdf793-d5e6-4376-a5c0-360bd14e8b0b" />
 
 4. What changed compared to the original tree?
 
@@ -291,6 +290,7 @@ We can root the tree using a specific taxon:
 rooted <- root(tree, "C")
 plot(rooted)
 ```
+<img width="1236" height="592" alt="image" src="https://github.com/user-attachments/assets/6b360081-6855-481d-9e0f-2a4a66209e61" />
 
 *Rooting changes the interpretation of evolutionary relationships.*
 
@@ -298,15 +298,15 @@ plot(rooted)
 Remove two species from a tree and compare the resulting topology.
 
 ### 7. Visualising trees with ggtree
-The `plot()` function is simple but limited.
-
-The `ggtree` package allows more flexible and publication-quality figures.
+* The `plot()` function is simple but limited.
+* The `ggtree` package allows more flexible and publication-quality figures.
 
 #### 7.1 Basic visualisation
 
 ```r
 ggtree(tree)
 ```
+<img width="1380" height="572" alt="image" src="https://github.com/user-attachments/assets/19b7ceaa-f69b-4d91-bc16-fbe89921eea6" />
 
 *This creates a tree using the grammar of graphics.*
 
@@ -316,6 +316,7 @@ ggtree(tree)
 ggtree(tree) +  
 geom_tiplab(size = 4)
 ```
+<img width="1307" height="570" alt="image" src="https://github.com/user-attachments/assets/3f967b4b-8409-4f36-b99e-c61de50b4bdd" />
 
 *This displays the names of the taxa.*
 
@@ -327,6 +328,7 @@ geom_tiplab() +
 geom_nodepoint(color = "red") +  
 theme_tree()
 ```
+<img width="1292" height="510" alt="image" src="https://github.com/user-attachments/assets/4a596607-80c7-48b1-b33d-3e2c726634d4" />
 
 5. What do the red points represent?
 
@@ -337,6 +339,7 @@ We can visualise the same tree with different layouts:
 ggtree(tree, layout = "circular") +  
 geom_tiplab()
 ```
+<img width="472" height="441" alt="image" src="https://github.com/user-attachments/assets/a58578cf-9de2-4284-8d0b-13e0ed951d4d" />
 
 *Other layouts are available (rectangular, slanted, etc.).*
 
@@ -347,7 +350,6 @@ Create a circular tree with:
 
 
 ## Useful tips
-
 In R, you can get help using:
 
 ```r
@@ -369,7 +371,7 @@ This tutorial provides only the basic tools to work with phylogenetic trees in R
 By now you should have:
 
 - [ ] Run basic R commands (arithmetic, variables, vectors, data frames)
-- [ ] Installed `ape`, `phytools`, `ggplot2` (CRAN) and `ggtree` (Bioconductor)
+- [ ] Installed `ape`, `phytools`, `ggplot2`, `BAMMTools` (CRAN) and `ggtree` (Bioconductor)
 - [ ] Loaded all four with `library()` without errors
 - [ ] Simulated and plotted your first `phylo` tree object
 
