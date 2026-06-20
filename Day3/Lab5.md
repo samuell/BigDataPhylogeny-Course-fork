@@ -20,30 +20,33 @@
 
   ### Datasets and software
   For this practical you'll need to use the following software (already installed in the server):
-  * CAFE v5.1.0. (https://anaconda.org/channels/bioconda/packages/cafe/overview)
-  * biopython (https://anaconda.org/channels/conda-forge/packages/biopython/overview)
+  * [CAFE v5.1.0.](https://anaconda.org/channels/bioconda/packages/cafe/overview)
+  * [biopython](https://anaconda.org/channels/conda-forge/packages/biopython/overview)
 
   We'll be using the following datasets:
-  * 'cafe_input.tsv' # this corresponds to the 'Orthogroups.GeneCount.tsv' reformatted for CAFE5 (we already prepared it for you).
-  * 'cafe_tree_ultrametric.nwk' the topology from previous practicals, made ultrametric. We use ape::chronos() (penalized likelihood rate-smoothing) to produce a relative-time ultrametric tree directly from branch lengths.
+  * `cafe_input.tsv` # this corresponds to the 'Orthogroups.GeneCount.tsv' reformatted for CAFE5 (we already prepared it for you).
+  * `cafe_tree_ultrametric.nwk` the topology from previous practicals, made ultrametric. We use `ape::chronos()` (penalized likelihood rate-smoothing) to produce a relative-time ultrametric tree directly from branch lengths.
 
   ## 1. Run CAFE5
-  ### 1.1 First check your input files:
+  ### 1.1 Check your input files:
   ```bash
   ls -la data/cafe_input.tsv data/cafe_tree_ultrametric.nwk
   head -3 data/cafe_input.tsv
   cat data/cafe_tree_ultrametric.nwk
   ```
-  **Checkpoint**: How many gene families are in cafe_input.tsv? How many species columns? Does the species count match the number of tips in the tree?
+  **Questions**:
+  - How many gene families are in cafe_input.tsv?
+  - How many species columns?
+  - Does the species count match the number of tips in the tree?
 
-  ### 1.2 Running CAFE5 — single global λ
+  ### 1.2 Running CAFE5: single global λ
   This is the simplest CAFE5 model: one rate of gene family evolution for the entire tree, no exceptions. Don't forget to activate the environment.
   ```bash
   mkdir -p results/cafe_base
   cafe5 -i data/cafe_input.tsv -t data/cafe_tree_ultrametric.nwk -o results/cafe_base
   ```
   *This should run in well under a minute for a dataset this size. Watch the terminal CAFE5 prints its optimization progress as it searches for the best-fitting λ.*
-  **Checkpoint**: Open 'results/cafe_base/Base_results.txt':
+  **Checkpoint**: Open `vresults/cafe_base/Base_results.txt`v:
   ```bash
   cat results/cafe_base/Base_results.txt
   ```
@@ -72,15 +75,16 @@
 
   ### 1.4 Find the gene families CAFE5 thinks are interesting
 
-  Look at the per-family results table (it may be a wider section within `Base_results.txt`, or a separate file depending on your CAFE5 build — check what's in your `results/cafe_base/` directory and open the most 
-  likely candidate). You're looking for two columns:
+  Look at the per-family results table (it may be a wider section within `Base_results.txt`, or a separate file depending on your CAFE5 build. Check what's in your `results/cafe_base/` directory and open the most likely candidate). You're looking for two columns:
 
-  - **Family-wide P-value**: is this family's overall pattern of size change unlikely under the fitted genome-wide λ? (Low p-value, conventionally < 0.01, = yes,  interesting.)
+  - **Family-wide P-value**: is this family's overall pattern of size change unlikely under the fitted genome-wide λ?
+    (Low p-value, conventionally < 0.01, = yes,  interesting.)
   - **Viterbi P-value** (only meaningful when the family-wide p-value is significant): tells you *which specific branch(es)* the unusual change happened on.
 
   ### 1.5 Questions
   1- How many gene families come out as significant (family-wide p < 0.01)?
-  2- As a fraction of all families tested, does that number seem high, low, or about what you'd expect? (There's no universally "correct" answer here, it depends entirely on the data — but having an intuition for the         proportion matters more than memorising a threshold.)
+  2- As a fraction of all families tested, does that number seem high, low, or about what you'd expect?
+  (There's no universally "correct" answer here, it depends entirely on the data, but having an intuition for the proportion matters more than memorising a threshold.)
 
 
     
