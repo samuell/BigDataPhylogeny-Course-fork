@@ -6,10 +6,10 @@
   Given:
   * a tree with branch lengths in comparable (ultrametric) time units, and
   * a table of how many gene copies each species has, for each gene family,
-  CAFE5 finds the value of λ that makes the observed gene counts most probable under the birth-death model (maximum likelihood), then uses that fitted model to:
-
-  - Reconstruct the most likely ancestral gene count at every internal node of the tree, for every family.
-  - Flag gene families whose size changes are statistically unlikely under the genome-wide λ — i.e., families evolving unusually fast on specific branches. These are your expansion/contraction candidates.
+  
+  *CAFE5* finds the value of λ that makes the observed gene counts most probable under the birth-death model (maximum likelihood), then uses that fitted model to:
+    - Reconstruct the most likely ancestral gene count at every internal node of the tree, for every family.
+    - Flag gene families whose size changes are statistically unlikely under the genome-wide λ — i.e., families evolving unusually fast on specific branches. These are your expansion/contraction candidates.
 
   
   ### Objectives
