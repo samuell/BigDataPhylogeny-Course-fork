@@ -182,47 +182,59 @@ library(ape)
 library(ggtree)
 library(ggplot2)
 library(tidytree)
+library(stringr)
 
 # 1. Read in the base, ultrametric tree (topology + node labels we kept)
-tree <- read.tree("data/cafe_tree_ultrametric.nwk")
+tree <- read.tree("cafe_tree_ultrametric.nwk")
 
 # 2. Build a small data frame of ancestral + tip copy numbers for YOUR chosen family,
-#    read off from Base_asr.tre (Section 2.2). Replace these example values with
-#    the real counts for your family.
-copy_numbers <- data.frame(
-  label = c("S_philippinensis","V_penis","S_velum","P_vernedei","S_dalli",
-            "A_californica","C_concholepas","T_virginea","L_scabra","H_cracherodii",
-            "S_atlantica","O_vulgaris","N_pompilius","V_oligotropha",
-            "A_discrepans","C_septemvalvis","D_sirenkoi","E_babai","N_megatrapezata","L_anatina",
-            "N1","N2","N3","N4","N5","N6","N7","N8","N9","N10",
-            "N11","N12","N13","N14","N15","N16","N17","N18","N19"),
-  copies = c(2,2,2,1,1, 3,3,2,2,2, 1,1,1,2, 4,4,3,2,2,1,   # tips (example values)
-             2,2,2,2,2,2,2,2,1,3, 3,2,2,1,1,3,4,4,2)        # internal nodes (example values)
+#    read off from Base_asr.tre (Section 2.1). Replace these example values with
+#    the real counts for your family. To do so, you can extract the information from the asr_tree 
+#    file:
+
+tree_text <- readLines("results/cafe_base/Base_asr.tre")
+og <- tree_text[grep("OG0001174", tree_text)]
+
+# 3. Copy tips
+tips <- str_extract_all(og, "[A-Za-z_]+<\\d+>_\\d+")[[1]]
+tip_df <- data.frame(
+  label = str_extract(tips, "^[A-Za-z_]+"),
+  copies = as.numeric(str_extract(tips, "(?<=_)\\d+$"))
 )
 
-# 3. Attach the data to the tree object
+# 4. Copy values at nodes
+nodes <- str_extract_all(og, "<\\d+>_\\d+")[[1]]
+
+node_df <- data.frame(
+  label = paste0("N", seq_along(nodes)),
+  copies = as.numeric(str_extract(nodes, "(?<=_)\\d+$"))
+)
+
+copy_numbers <- rbind(tip_df, node_df)
+
+# 5. Attach the data to the tree object
 p <- ggtree(tree) %<+% copy_numbers
 
-# 4. Plot: tip labels, tip+node points sized/colored by copy number, node labels for reference
+# 6. Plot: tip labels, tip+node points sized/colored by copy number, node labels for reference
 p +
   geom_tiplab(size = 3, offset = 0.02) +
   geom_point(aes(color = copies, size = copies)) +
-  geom_text(aes(label = label), hjust = -0.3, vjust = -0.8, size = 2, color = "grey40") +
-  scale_color_viridis_c(name = "Gene\ncopies") +
-  scale_size_continuous(name = "Gene\ncopies", range = c(2, 8)) +
+  scale_color_viridis_c(name = "Gene copies") +
+  scale_size_continuous(name = "Gene copies", range = c(2, 8)) +
   theme_tree2() +
-  ggtitle("OG0001234 — ancestral gene copy number reconstruction")
+  ggtitle("OG0001174 — ancestral gene copy number reconstruction")
 ```
+You'll see something like this:
+<img width="1446" height="851" alt="image" src="https://github.com/user-attachments/assets/630098c7-1cf5-4bc0-84be-28b097273ada" />
 
-A few things worth pointing out to students as they adapt this:
 
-- `%<+%` is `ggtree`'s operator for attaching a metadata data frame to a tree object by matching the `label` column — this is the main thing that trips people up the first time, so it's worth flagging explicitly.
-- Because we kept the `N1`–`N19` node labels in our original Newick file, `read.tree()` preserves them as `node.label`, and they line up directly with the labels you read off `Base_asr.tre` in Section 2.1 — no relabeling needed.
+**Some tips:**
+- `%<+%` is `ggtree`'s operator for attaching a metadata data frame to a tree object by matching the `label` column.
 - Coloring/sizing points by copy number turns "family-wide p-value is significant" into something visual: you can immediately see *where* the copy number jumps happen along the tree, which is the entire point of doing ancestral state reconstruction in the first place.
 
-### 2.3 Highlighting the branch(es) CAFE5 flagged as significant (Viterbi)
+### 2.4 Highlighting the branch(es) CAFE5 flagged as significant
 
-Once you've identified, from Section 1.4, *which branch* had a significant Viterbi p-value for your chosen family, you can highlight that branch directly rather than relying on the reader to compare copy numbers visually:
+Once you've identified, from Section 1.4, *which branch* had a significant p-value for your chosen family, you can highlight that branch directly rather than relying on the reader to compare copy numbers visually:
 
 ```r
 # Suppose Section 1.4 told you the significant branch leads to node N16
@@ -234,44 +246,97 @@ p +
   scale_color_viridis_c(name = "Gene\ncopies") +
   scale_size_continuous(name = "Gene\ncopies", range = c(2, 8)) +
   theme_tree2() +
-  ggtitle("OG0001234 — highlighted branch shows significant Viterbi p-value")
+  ggtitle("OG0001174 — highlighted branch shows significant p-value")
 ```
 
-`geom_hilight()` shades the clade descending from a given node — here we find that node with `MRCA()` using two tips that define it, rather than hardcoding a node number, since internal `ggtree`-assigned node numbers don't always match your original `N1`–`N19` labels one-to-one (this is a common gotcha: `ggtree` numbers nodes internally for plotting purposes, separately from any labels stored in the original tree file).
+`geom_hilight()` shades the clade descending from a given node. Here we find that node with `MRCA()` using two tips that define it, rather than hardcoding a node number, since internal `ggtree`-assigned node numbers don't always match your original `N1`–`N19` labels one-to-one (`ggtree` numbers nodes internally for plotting purposes, separately from any labels stored in the original tree file).
 
-### 2.4 Zooming out: a tree-wide expansion/contraction summary
+<img width="1431" height="792" alt="image" src="https://github.com/user-attachments/assets/630aa419-8a83-4991-98a8-5c679ddf0cf7" />
 
-For a "big picture" figure across *all* families rather than just one, `*_clade_results.txt` (Section 1.3) gives you, per branch, a count of how many families expanded vs. contracted. This is naturally a **bar plot per branch**, or — more strikingly — a tree where each branch is colored by net expansion/contraction:
+
+### 2.5 A tree-wide expansion/contraction summary
+
+For a "big picture" figure across *all* families rather than just one, `*_clade_results.txt` (Section 1.3) gives you, per branch, a count of how many families expanded vs. contracted. This is naturally a **bar plot per branch**, or, more strikingly, a tree where each branch is colored by net expansion/contraction:
 
 ```r
-clade_results <- read.table("results/cafe_base/Base_clade_results.txt",
-                             header = TRUE, sep = "\t")
-# Expect columns roughly like: Taxon_ID, Increase, Decrease (names vary by CAFE5 build —
-# run head() on this file first and adjust column names below accordingly)
+library(ape)
+library(ggtree)
+library(ggplot2)
 
-clade_results$net_change <- clade_results$Increase - clade_results$Decrease
+# 1. Read data
+change <- read.table(
+  "results/cafe_base/Base_change.tab",
+  header = TRUE,
+  sep = "\t",
+  check.names = FALSE,
+  quote = ""
+)
 
-p2 <- ggtree(tree) %<+% clade_results
+tree <- read.tree("species_tree_topology.nwk")
 
-p2 +
-  geom_tree(aes(color = net_change), size = 1.2) +
+# 2. Net change per node
+node_cols <- grep("<", colnames(change), value = TRUE)
+net_mat <- change[, node_cols]
+names(net_mat) <- node_cols
+net_change <- colSums(net_mat, na.rm = TRUE)
+
+# 3. Select nodes from the tree
+p <- ggtree(tree)
+
+tree_df <- p$data %>%
+  mutate(
+    cafe_node = ifelse(isTip, label, paste0("<", node, ">"))
+  )
+
+tree_df$net_change <- net_change[tree_df$cafe_node]
+
+# 4. Remove NAs
+tree_df_clean <- tree_df %>%
+  filter(!is.na(net_change))
+
+# 5. Define extreme clades
+thr <- quantile(abs(tree_df_clean$net_change), 0.95)
+
+tree_df$highlight <- ifelse(
+  !is.na(tree_df$net_change) & abs(tree_df$net_change) > thr,
+  TRUE,
+  FALSE
+)
+
+# 6. Final plot
+ggtree(tree) %<+% tree_df +
+  geom_tree(aes(color = net_change), linewidth = 1) +
   geom_tiplab(size = 3) +
-  scale_color_gradient2(low = "firebrick", mid = "grey80", high = "steelblue",
-                         midpoint = 0, name = "Net family\nexpansions") +
+  scale_color_gradient2(
+    low = "firebrick",
+    mid = "grey90",
+    high = "steelblue",
+    midpoint = 0,
+    name = "Gene family\nexpansion / contraction"
+  ) +
+  geom_point(aes(size = abs(net_change), color = net_change)) +
+  scale_size_continuous(
+    name = "CAFE5 inferred\nfamily size shift"
+  ) +
   theme_tree2() +
-  ggtitle("Genome-wide gene family expansion/contraction across the phylogeny")
+  ggtitle("CAFE5 gene family expansions/contractions")
 ```
 
+<img width="1397" height="702" alt="image" src="https://github.com/user-attachments/assets/71afccce-b8c7-442a-8d2e-33e15de13d15" />
+
+
 This is the figure that best answers the high-level question this whole practical is built around: **which lineages have been gaining gene families fastest, and which have been losing them?**
+This figure shows how gene families have changed throughout the evolution of animals in your phylogenetic tree, estimated with CAFE5.
+Specifically, we are looking at gene families **expansions** and **contractions** in different evolutionary lineages. The colors of the branches correspond to: blue (or light gray) → loss of gene families (contractions) and red → gain of gene families (expansions). The color indicates the estimated global change at that node/branch. The size of the dots indicates the magnitude of the evolutionary change. Small circle → few changes, large circle → many changes of gene families. **Important**: it is not the number of individual genes, but entire families.
 
-### 2.5 Questions
+We talk about gene family expansion when a gene family duplicates and more copies appear. It can indicate functional adaptation, new biological functions, specialisation, etc. Contraction of gene families, on the other hand, indicates that genes are lost and the family becomes smaller. It can indicate genomic simplification, loss of unnecessary functions, or adaptation to new environments. What we have done with CAFE5 here is to model the evolution of the number of genes per family and reconstruct what the ancestral genomes were like where genes have been gained or lost. It is observed that some lineages have experienced more genomic dynamism (expansions/contractions) than others. 
+This particular tree shows how the number of gene families has changed throughout evolution. Red indicates gene loss, blue indicates gain, and the size of the dots indicates how many changes there have been. This allows us to see which lineages have had the most genomic innovation.
 
-1. For the family you chose in Section 2.0, which branch shows the largest jump in inferred copy number? Does this match the branch CAFE5 flagged with a significant Viterbi p-value?
-2. Looking at your Section 2.4 tree-wide summary: are expansions/contractions spread evenly across the tree, or concentrated in a few lineages? If concentrated, can you think of a biological hypothesis (ecology, life history, known whole-genome or tandem duplications in that group) that might explain it?
-3. Why do you think we colored/sized points by copy number *and* additionally wrote the raw number as text, rather than relying on color/size alone? (Hint: think about how easy it is to misjudge small numeric differences from color or marker size in a printed or color-blind-unfriendly figure.)
+### 2.6 Questions
 
----
+1. For the family you chose in Section 2.1, which branch shows the largest jump in inferred copy number? Does this match the branch CAFE5 flagged with a significant p-value?
+2. Looking at your tree-wide summary: are expansions/contractions spread evenly across the tree, or concentrated in a few lineages? If concentrated, can you think of a biological hypothesis (ecology, life history, known whole-genome or tandem duplications in that group) that might explain it?
 
 ## 3. Wrap-up
 
-You've now gone from raw OrthoFinder gene counts, through a maximum-likelihood birth-death model fitted with CAFE5, to ancestral state reconstructions and a tree-mapped visualization of where gene family content has expanded or contracted across your phylogeny. The single global λ model you ran here is the simplest version of this analysis — in your own research, the natural next steps are exploring multi-rate models (different λ for different clades) and incorporating an error model to account for genome annotation noise, both built into CAFE5 but outside today's scope.
+You've now gone from raw OrthoFinder gene counts, through a maximum-likelihood birth-death model fitted with CAFE5, to ancestral state reconstructions and a tree-mapped visualisation of where gene family content has expanded or contracted across your phylogeny. The single global λ model you ran here is the simplest version of this analysis. In your own research, the natural next steps are exploring multi-rate models (different λ for different clades) and incorporating an error model to account for genome annotation noise, both built into CAFE5 but outside today's scope.
