@@ -93,10 +93,16 @@ Here we were lucky enough that we have retrieve single copies, we will now align
 
 ## Multiple sequence alignment
 
-Due to time constraints we have selected a subset 
-Copy the fasta files in a new directory in the home directory
+Due to time constraints we have selected a subset of the single copy orthologs that were identified. 
 
 ```sh
+#First we deactivate the Orthofinder environment
+conda deactivate
+
+#We now activate the environment that we are going to use for the phylogenomic inference.
+conda activate BigDataPhylo
+#if you want to know which softwares are installed in the environment you can type
+conda list #it will provide a list of all packages and dependencies you will use in the next practicals
 #Copy the entire directory in your home directory
 cp -r /home/ubuntu/Share/Single_Copy_Orthologue_Sequences .
 ```
@@ -108,7 +114,7 @@ The next step is to infer multiple sequence alignments from orthogroups. Multipl
 
 We will align gene files separately using MAFFT in a for loop:
 
-```
+```sh
 for f in *fa; do mafft $f > $f.mafft; done
 ```
 
@@ -122,7 +128,8 @@ Some gene regions (e.g., fast-evolving) are difficult to align and thus position
 To trim alignment positions we can use [TrimAl](https://trimal.readthedocs.io/en/latest/) but several other software are also available.
 
 From the same directory run:
-```
+
+```sh
 for a in *.mafft;
 
 	do trimal -in $a -out $a.trim  -fasta -gappyout;
@@ -132,21 +139,4 @@ done
 ```
 While diving into phylogenomic pipelines, it is always advisable to check a few intermediate results to ensure we are doing what we should be doing. Multiple sequence alignments can be visualized in [SeaView](http://doua.prabi.fr/software/seaview) or [AliView](https://github.com/AliView/AliView). Also, one could have a quick look at alignments using command line tools (`less -S`).
 
-## Single gene tree inference
-
-We have selected our orthologs, aligned and we trimmed the sequences, we are now ready to infer the single gene trees! It is always good practice to infer the single gene trees before doing the concatenation of the super matrix. This is because, even if Orthofinder is confidently selecting orthologous genes, it could still retain some paralogs. We are going to use IQTree3, which is one of the most widely and complete software used for phylogenetic inference using Maximum likelihood. 
-
-Let's infer the trees and see what happens. From the same directory type the following command:
-
-```sh
-for i in *trim ;
-
- do iqtree -s $i -m MFP -bb 1000 ;
-
-done
-```
-It will take around 17 min to run. In the mean time you can familiarise yourself with the outputs of IQTREE and the flags we have used [here](https://iqtree.github.io/doc/Tutorial).
-Once the trees are done(you will see several files called `.treefile`), you can download a couple of them on your PC/Mac and read them with FigTree. 
-Check the bootstrap support by selecting the `node label` button on the left and look at the branches, try to see if you notice any long branch.
-
-Well done on your first day! You have inferred you first gene trees and you are almost set to run your first phylogenomic tree!
+Well done on your first day! You have a first dataset prepared, tomorrow we will lear how to infer trees, with Maximum likelihood, Bayesian inference, and how to check for paralogs.

@@ -23,6 +23,18 @@
     All commands assume you are working in the directory where your data files are located.
 
 ## 1. Matrix concatenation
+In the previous practical we inferred the single gene trees to make sure that no paralogs were retained. Now that we are sure our selected sequencesare good to go, we can concatenate them. 
+We put together a dataset 
+We are going to use a script `FASconCAT-G_v1.04.pl` that allows us to create the super alignment. It's important that all sequences headers match eachother across fasta files. 
+```sh
+conda activate BigDataPhylo
+#copy the directory needed
+
+cp -r /home/ubuntu/Share/Concatenation/ .
+#enter the directory, you will see 11 fasta files. These are the alignments we are going to use for the concatenation. IMPORTANT: FASconCAT-G_v1.04.pl is sensible to file extention, that's why all files end with .fas
+perl FASconCAT-G_v1.04.pl -l -s
+```
+Once it's done you'll see that the script has created three files `FcC_info.xls  FcC_supermatrix.fas  FcC_supermatrix_partition.txt` . The supermatrix is what we need for the next steps.
 
 
 ## 2. Model Selection
@@ -174,15 +186,79 @@
   9.	What biological conclusion can you draw from the topology test result?
 
 
-## 5. Optional: Bayesian Inference
+## 5. Optional: Bayesian Inference (BI)
+The gold standard in phylogenomic studies is to run both ML and BI inference, however sometimes running BI requires too much computational power (e.g. >500 genomes, very deep nodes, convergence problems). It is not feaseble to run Phylobayes for the time we have in this course, it will take at least a week to go cloase to convergence, nevertheless, here we leave you instructions in case you would like to try and run BI inference with [Phylobayes](https://github.com/bayesiancook/phylobayes/blob/master/pbManual4.1.pdf) in the future. 
 
   ### 5.1 Phylobayes
+  Phylobayes is an amazing software that includes mixture models, which, at the moment of this practical, are the most complex models able to properly describe heterogeneity in the data.
+  In BI, you need to run multiple chains so that the tree space is correctly sampled, then you compare the two chains to check for convergence (i.e. both chains have sampled the trees space properly and reached the same zone).
 
-  ### 5.2 Checking convergence
+  ```sh
+#chain 1
+pb_mpi \
+    -d Mollusca_FcC_supermatrix.phy \
+    -cat \
+    -poisson \
+    -x 1 10000 \
+    Mollusca_catpoisson_chain1
+#chain 2
+pb_mpi \
+    -d Mollusca_FcC_supermatrix.phy \
+    -cat \
+    -poisson \
+    -x 1 10000 \
+    Mollusca_catpoisson_chain2
+```
+Convergence in Phylobayes is assessed with the functions`bpcomp` and `tracecomp`. Finally, you can visualize the chain (file.trace) with tracer.
 
-  
-## 6. Support methods: Bootstrap vs Posterior Probability
-  ### 6.1 Conceptual comparison
+```sh
+#Check convergence and generate the consensus tree
+bpcomp -x burnin chain1  chain2
+#burning of 1000, sampling every 20 trees, for a maximum of 5558 trees
+bpcomp -x 1000 20 5558 Mollusca_catpoisson_chain1 Mollusca_catpoisson_chain2
+
+#bpcomp output
+#Mollusca_catpoisson_chain1.treelist : 227 trees
+#Mollusca_catpoisson_chain2.treelist : 227 trees
+
+#maxdiff     : 0.110132
+#meandiff    : 0.00300849
+
+#bipartition list in : bpcomp.bplist
+#consensus in        : bpcomp.con.tre
+```
+Some guidelines:
+
+-  maxdiff < 0.1: good run.
+-  maxdiff < 0.3: acceptable: gives a good qualitative picture of the posterior consensus.
+- 0.3 < maxdiff < 1: the sample is not yet sufficiently large, and the chains have not converged, but this is on the right track.
+-  if maxdiff = 1 even after 10,000 points, this indicates that at least one of the runs is stuck in a local maximum.
+
+`tracecomp` will produce an output summarizing the discrepancies and the effective sizes estimated for each column of the trace file.
+
+```sh
+#To get the parameters
+tracecomp -x burnin chain1  chain2
+tracecomp -x 1000 Mollusca_catpoisson_chain1 Mollusca_catpoisson_chain2
+
+#setting upper limit to : 5559
+#Mollusca_catpoisson_chain1.trace	 burnin : 1000	sample size : 4559
+#Mollusca_catpoisson_chain2.trace	 burnin : 1000	sample size : 4559
+#name                effsize	rel_diff
+
+#loglik              86		0.0900688
+#length              1292		0.0552623
+#alpha               522		0.0050667
+#Nmode               213		0.16445
+#statent             222		0.0481371
+#statalpha           371		0.0763524
+
+  ```
+Of course we have run the BI for you, you can check the results by copying the files from 
+
+
+## 4. Support methods: Bootstrap vs Posterior Probability
+  ### 4.1 Conceptual comparison
   Both bootstrap support (BS) and Bayesian posterior probability (PP) measure confidence in a bipartition (clade), but they estimate fundamentally different quantities:
   
   | Feature	| Bootstrap (ML/MP) vs Posterior Probability (Bayesian)| 
