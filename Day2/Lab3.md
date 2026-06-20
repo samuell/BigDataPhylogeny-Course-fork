@@ -283,12 +283,15 @@ Notice the format: **`Species|AccessionID`**. This is required (PhyloPyPruner us
 *(Answer: `Lottia_gigantea`, `Crassostrea_gigas`, `Octopus_vulgaris` (×3), `Acanthopleura_granulata`, and `Neopilina_galatheae` all have 2-3 sequences — these are our candidate paralogs.)*
 
 ## 7.2 Alignment and tree inference
-In order to apply PhyloPyPruner, we need to align orthogroup sequences and then infer the gene trees. The program takes one, or more, multiple sequence 
-alignments (MSAs) and corresponding trees as an input. The alignments should be in `Fasta` format and trees in `Newick` format. The name should be the same for each corresponding alignment and tree file.
+In order to apply PhyloPyPruner, we need to align orthogroup sequences and then infer the gene trees. The program takes one or more multiple sequence 
+alignments (MSAs) and corresponding trees as input. The alignments should be in `Fasta` format and trees in `Newick` format. The name should be the same for each corresponding alignment and tree file.
 
-## 3. Look at the tree first (2 min)
+> For this exercise we already provide you with the correct headers, but you should keep in mind that **the format is very important** for everything to work smoothly with `PhyloPyPruner`.
+> With the sequence files, you will need to generate the alignment, trim it, and infer the gene trees with ML in the same way you did before.
 
-Open `OG0001135_mollusca.tre` in FigTree (or paste into [iTOL](https://itol.embl.de/)) and look at where the multi-copy species fall.
+## 7.3. Look at the tree first
+
+Open one of the trees in FigTree (or paste into [iTOL](https://itol.embl.de/)) and look at where the multi-copy species fall.
 
 You should see something like this pattern:
 
