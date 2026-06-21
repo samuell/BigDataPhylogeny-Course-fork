@@ -128,7 +128,11 @@ writeLines(paste(global_sampling), con = "sampling_fractions.txt")
 setBAMMpriors(tree,outfile = "bamm_priors.txt")
 ##You wiil need to paste the outfile in a specific section of the control file
 ## Now we move on the terminal, to run the BAMM. We'll be back in R to analyse the output
+```
 
+
+
+```R
 # Load BAMM results
 library(coda)
 #Check convergence
