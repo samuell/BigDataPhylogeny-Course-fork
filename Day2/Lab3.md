@@ -269,19 +269,19 @@ tracecomp -x 1000 Mollusca_catpoisson_chain1 Mollusca_catpoisson_chain2
   ```
   *A strict consensus retains only clades present in ALL trees.*
 
-  * Extract bootstrap trees for inspection. Some comparative genomics programs, such as `ALERax` or `ALE`, require the result of the bootstrap search to validate the DTL events that occurred in a gene family. For this purpose, when calculating gene trees for use with these programs, the `--wbt` flag must be added, so that the bootstrap replicate information will be preserved.
+  * Extract bootstrap trees for inspection. Some comparative genomics programs, such as `ALERax` or `ALE`, require the result of the bootstrap search to validate the DTL events that occurred in a gene family. For this purpose, when calculating gene trees for use with these programs, the `--wbtl` flag must be added, so that the bootstrap replicate information will be preserved.
 
   ```bash
   for f in *.fasta; do
-  iqtree -s $f -m TESTMERGE -B 1000 --wbt --prefix gene_tree_bt;
+  iqtree -s $f -m TESTMERGE -B 1000 --wbtl -T AUTO;
   done
   # --wbt writes the full set of bootstrap trees to gene_tree_bt.ufboot.
   ```
 
   *TIP*
-  The '.contree' file already has bootstrap values embedded — use this file for visualisation.
+  The `.contree` file already has bootstrap values embedded, use this file for visualisation.
   In a 50% majority-rule consensus: a clade appears if it was present in > 50% of bootstrap trees.
-  A strict consensus is very conservative — one conflicting tree removes a clade entirely.
+  A strict consensus is very conservative, one conflicting tree removes a clade entirely.
 
   ### 5.5 Threshold guidelines
   | Support value |	Interpretation guideline |
@@ -322,7 +322,7 @@ tracecomp -x 1000 Mollusca_catpoisson_chain1 Mollusca_catpoisson_chain2
   * Run IQ-TREE with the -z flag to test topologies.
 
   ```bash
-  iqtree -s Mollusca_FcC_supermatrix.fas -m GTR+F+I+G4 -z trees_to_test.nwk -n 0 -zb 10000 -zw -au --prefix topo_test #use the model that best fits (from section 1)
+  iqtree -s Mollusca_FcC_supermatrix.fas -m GTR+F+I+G4 -z trees_to_test.nwk -n 0 -zb 10000 -zw -au --prefix topo_test #use the model that best fits (from section 2)
   # -n 0 skips ML search; -zb 10000 = 10,000 RELL replicates for bootstrap; -au runs the AU test.
   ```
 
@@ -339,7 +339,7 @@ tracecomp -x 1000 Mollusca_catpoisson_chain1 Mollusca_catpoisson_chain2
   * Failing to reject an alternative tree does NOT mean it is equally supported.
   * The KH test is invalid if you chose the alternative tree because it looked good (this is known as 'topology fishing').
 
-  * You'll find more information regarding topology tests here: https://iqtree.github.io/doc/Advanced-Tutorial
+  * You'll find more information regarding topology tests here: [IQtree github](https://iqtree.github.io/doc/Advanced-Tutorial).
     
   ### 6.4 Questions
   - What is the AU p-value for your ML tree? For the alternative tree?
