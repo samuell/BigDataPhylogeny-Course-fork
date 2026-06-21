@@ -458,7 +458,8 @@ An **orthogroup** from OrthoFinder is a set of sequences descended from a single
 
 If you concatenate or build a tree from sequences that include undetected paralogs, you risk inferring a wrong topology: the tree will reflect *when genes duplicated*, not *when species diverged*.
 
-> **Ortholog** → related by speciation → useful for species tree
+> **Ortholog** → related by speciation → useful for species tree.
+> 
 > **Paralog** → related by duplication → can mislead species tree inference if not removed
 
 [**PhyloPyPruner**](https://github.com/fethalen/phylopypruner) solves this by building a tree for each orthogroup, finding clusters of paralogs (sequences from the same species that are more similar to *each other* than to other species), and keeping only one representative per species.
