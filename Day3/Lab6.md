@@ -40,22 +40,22 @@ N16 groups the chitons and aplacophorans together (the Aculifera clade); N2 is t
 
 ### 1.2 The core gene set (single-copy orthologues)
 
-`data/core_gene_set/` contains six single-copy protein-coding gene families, each present in all 20 species exactly once. They were chosen because they are short, well-conserved, easy-to-align genes — exactly the kind of "boring, reliable" gene family you would use to first sanity-check a pipeline in a real research project, before tackling messier, larger gene families.
+`data/lab6/core_gene_set/` contains six single-copy protein-coding gene families, each present in all 20 species exactly once. They were chosen because they are short, well-conserved, easy-to-align genes, exactly the kind of gene family you would use to first sanity-check a pipeline in a real research project, before tackling messier, larger gene families.
 
 | Gene | File | Length (aa) | Notes |
 |---|---|---|---|
-| RS9 | `RS9_OG0000545.fasta` | 130, no indels | 30S ribosomal protein S9 — used for the **ASR exercise** |
+| RS9 | `RS9_OG0000545.fasta` | 130, no indels | 30S ribosomal protein S9, used for the **ASR exercise** |
 | RS7 | `RS7_OG0000433.fasta` | 156, no indels | 30S ribosomal protein S7 |
 | SSRP | `SSRP_OG0000396.fasta` | ~155 | SsrA-binding protein |
 | TRMD | `TRMD_OG0000263.fasta` | ~240, has small indels | tRNA (guanine-N1)-methyltransferase |
 | SCPA | `SCPA_OG0000226.fasta` | ~235, has small indels | base gene used to build the engineered duplication family |
 | RSMA | `RSMA_OG0000272.fasta` | ~290 | base gene used to build the engineered HGT family |
 
-Because every gene here is a genuine single-copy orthologue (one gene, one species, no duplicates, no losses), reconciling any of them against the species tree will normally show you **zero duplications and zero transfers**. This is not a failure of the method — it is what a "clean," fully vertically-inherited gene family is supposed to look like, and it's an important reference point before looking at messier data.
+Because every gene here is a genuine single-copy orthologue (one gene, one species, no duplicates, no losses), reconciling any of them against the species tree will normally show you **zero duplications and zero transfers**. This is not a failure of the method, it is what a "clean," fully vertically-inherited gene family is supposed to look like, and it's an important reference point before looking at messier data.
 
 ### 1.3 The engineered DTL teaching families
 
-Because the core gene set has no real duplications, transfers, or losses to find, `data/dtl_engineered/` contains two gene families built by deliberately editing the core genes. `scripts/build_dtl_families.py` documents and reproduces exactly what was changed; read the comment block at the top of that script for the full details. In short:
+Because the core gene set has no real duplications, transfers, or losses to find, `data/lab6/dtl_engineered/` contains two gene families built by deliberately editing the core genes. `scripts/build_dtl_families.py` documents and reproduces exactly what was changed; read the comment block at the top of that script for the full details. In short:
 
 **FAMILY_A_DUP_LOSS** (built from the SCPA gene): a duplication was inserted on the branch leading to the cephalopod clade (*Sepiola atlantica*, *Octopus vulgaris*, *Nautilus pompilius*: node N14 on the species tree), so that *Sepiola* and *Octopus* now each carry two paralogous copies of this gene, while *Nautilus* only has one (the second copy was "lost"). All other 17 species are untouched, single-copy sequences.
 
