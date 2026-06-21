@@ -1,4 +1,4 @@
-# Concatenation · Model Selection · Tree Inference · Topology Tests · Tree Support · Paralog removal · Visualisation with FigTree & iTOL
+# Concatenation · Model Selection · Tree Inference · Topology Tests · Tree Support · Visualisation with FigTree & iTOL · Paralog removal
 
 ## 0. Introduction
 
@@ -16,44 +16,47 @@
   •	Critically compare bootstrap support with Bayesian posterior probability.
 
   ### Software and Data
-  - Software required: IQ-TREE (≥ 2.2), PhyloPyPruner, FigTree (≥ 1.4.4), a web browser for iTOL.
+  - Software required: `FASconCAT-G_v1.04.pl`, `IQ-TREE (≥ 2.2)`, `PhyloBayes`, `FigTree (≥ 1.4.4)`, a web browser for `iTOL`, `PhyloPyPruner`.
   
-  - Data files provided: Orthogroup sequences with paralogs, Mollusca_FcC_supermatrix.fas, alt_topo.nwk (alternative topology).
+  - Data files provided: Orthogroup sequences with paralogs, alt_topo.nwk (alternative topology).
     
     All commands assume you are working in the directory where your data files are located.
 
+---
+
 ## 1. Matrix concatenation
-In the previous practical we selected the orthologs and performed multiple sequence alignment and trimming. Now that we are sure our selected sequencesare good to go, we can concatenate them. 
-We are going to use a script `FASconCAT-G_v1.04.pl` that allows us to create the super alignment. It's important that all sequences headers match eachother across fasta files. 
+In the previous practical, we selected the orthologs and performed multiple sequence alignment and trimming. Now that we are sure our selected sequences are good to go, we can concatenate them. 
+We are going to use a script `FASconCAT-G_v1.04.pl` that allows us to create the super alignment. It's important that all sequences' headers match each other across fasta files. 
 ```sh
 conda activate BigDataPhylo
 #copy the directory with the dataset needed
 
 cp -r /home/ubuntu/Share/Concatenation/ .
-#enter the directory, you will see 11 fasta files. These are the alignments we are going to use for the concatenation. IMPORTANT: FASconCAT-G_v1.04.pl is sensible to file extention, that's why all files end with .fas
+# enter the directory, you will see 11 fasta files. These are the alignments we are going to use for the concatenation. IMPORTANT: FASconCAT-G_v1.04.pl is sensible to file extension, that's why all files end with `.fas`
 perl FASconCAT-G_v1.04.pl -l -s
 ```
-Once it's done you'll see that the script has created three files `FcC_info.xls  FcC_supermatrix.fas  FcC_supermatrix_partition.txt` . The supermatrix is what we need for the next steps.
+Once it's done, you'll see that the script has created three files `FcC_info.xls  FcC_supermatrix.fas  FcC_supermatrix_partition.txt` . The supermatrix is what we need for the next steps.
 You can rename the matrix as in `Mollusca_FcC_supermatrix.fas`.
-This is the matrix you will use for the following steps.
+**This is the matrix you will use for the following steps.**
+
+---
 
 ## 2. Model Selection
   ### 2.1 Why does the model matter?
-  Phylogenetic inference requires a probabilistic model of sequence evolution. The model describes how nucleotides (or amino acids) change over time. Choosing a model that is too simple can cause systematic 
-  biases in topology and branch lengths; an overly complex model wastes degrees of freedom. Model selection balances fit and complexity.
+  Phylogenetic inference requires a probabilistic model of sequence evolution. The model describes how nucleotides (or amino acids) change over time. Choosing a model that is too simple can cause systematic biases in topology and branch lengths; an overly complex model wastes degrees of freedom. Model selection balances fit and complexity.
 
   ### 2.2. Key information criteria
   | Criterion	| Description & preference |
   | --- | --- |
-  | AIC (Akaike)	| Penalises each free parameter by 2. Tends to select slightly richer models. Use when prediction is the goal. |
-  | AICc	| AIC corrected for small sample size. Preferred when n / k < 40 (n = sites, k = parameters). |
-  | BIC (Bayesian)	| Stronger penalty (ln n per parameter). Tends to prefer simpler models. Recommended for most phylogenomic datasets. |
+  | `AIC (Akaike)`	| Penalises each free parameter by 2. Tends to select slightly richer models. Use when prediction is the goal. |
+  | `AICc`	| AIC corrected for small sample size. Preferred when n / k < 40 (n = sites, k = parameters). |
+  | `BIC (Bayesian)`	| Stronger penalty (ln n per parameter). Tends to prefer simpler models. Recommended for most phylogenomic datasets. |
 
   ### 2.3 Running ModelFinder in IQ-Tree
-  IQ-TREE integrates ModelFinder, which evaluates hundreds of substitution models efficiently. We will use the matrix generated in the previous practical that is already aligned and curated.
+  IQ-TREE integrates `ModelFinder`, which efficiently evaluates hundreds of substitution models. We will use the concatenated matrix generated in the previous section, already aligned and curated.
 
   ```bash
-  # Run ModelFinder (standalone — no tree inference).
+  # Run ModelFinder (standalone, no tree inference).
   iqtree -s Mollusca_FcC_supermatrix.fas -m MF --prefix model_test -nt AUTO
   # -m MF = ModelFinder only.
   ```
@@ -66,38 +69,41 @@ This is the matrix you will use for the following steps.
   
   *TIP*
   
-  The '.iqtree' log file contains the full model comparison table.
-  Look for lines labelled 'AIC', 'AICc', and 'BIC' — they may differ! Always justify which criterion you use.
-  Common best-fit models for chloroplast data: GTR+F+I+G4, TVM+F+G4, SYM+I+G4.
-
+  The `.iqtree` log file contains the full model comparison table.
+  Look for lines labelled as 'AIC', 'AICc', and 'BIC', they may differ! Always justify which criterion you use.
+ 
   #### Understanding the model notation
-  | Symbol	| Meaning |
-  | --- | --- |
-  | GTR	| General Time Reversible — 6 substitution rate categories, most parameter-rich. |
-  | HKY	| Hasegawa–Kishino–Yano — distinguishes transitions from transversions only. |
-  | +F	| Empirical base frequencies estimated from the data. |
-  | +I	| Proportion of invariable sites. |
-  | +G4	| Gamma-distributed rate variation across sites (4 rate categories). |
-  | +R4	| FreeRate model with 4 categories — more flexible than +G4. |
+  | Symbol	| Meaning | Data |
+  | --- | --- | --- |
+  | GTR	| General Time Reversible: 6 substitution rate categories, most parameter-rich. | Nucleotide model |
+  | HKY	| Hasegawa–Kishino–Yano: distinguishes transitions from transversions only. | Nucleotide model |
+  | +F	| Empirical base frequencies estimated from the data. | - |
+  | +I	| Proportion of invariable sites. | - |
+  | +G4	| Gamma-distributed rate variation across sites (4 rate categories). | - |
+  | +R4	| FreeRate model with 4 categories — more flexible than +G4. | - |
 
-* In this website you'll find information about models: https://iqtree.github.io/doc/Substitution-Models
+* In this [website](https://iqtree.github.io/doc/Substitution-Models) you'll find information about models.
   
   ### 2.4 Questions
-  1.	Which model was selected under BIC? Is it the same as AIC?
-  2.	How many free parameters does the selected model have? (Hint: look at the 'df' column.)
-  3.	What does the proportion of invariable sites (+I value) tell you about the alignment?
+  - Which model was selected under BIC? Is it the same as AIC?
+  - How many free parameters does the selected model have? (Hint: look at the 'df' column.)
+  - What does the proportion of invariable sites (+I value) tell you about the alignment?
 
+---
+
+## Tree inference
 ## 3. Maximum Likelihood Tree Inference
   ### 3.1  The ML principle
-  Maximum Likelihood (ML) inference finds the tree topology and branch lengths that maximise the probability of observing the data given the model. IQ-TREE uses stochastic perturbations (random NNI moves) from multiple      starting trees to escape local optima.
+  `Maximum Likelihood (ML)` inference finds the tree topology and branch lengths that maximise the probability of observing the data given the model. [`IQ-TREE`](https://iqtree.github.io/) uses stochastic perturbations (random NNI moves) from multiple starting trees to escape local optima.
 
   ### 3.2 Run ML inference with the best-fit model and ultrafast bootstrap.
-  You already inferred a ML tree in the previous practical. Let's consolidate what you learnt:
-
+  
   ```bash
-  iqtree -s Mollusca_FcC_supermatrix.fas -m GTR+F+I+G4 -bb 1000 -nt AUTO --prefix ml_tree #replace GTR+F+I+G4 with the model you found in Section 1.
-  # -nt AUTO lets IQ-TREE select the optimal number of CPU threads.
+  iqtree -s Mollusca_FcC_supermatrix.fas -m LG+C60 -B 1000 -T AUTO --prefix ml_tree 
+  # -T AUTO lets IQ-TREE select the optimal number of CPU threads.
   ```
+ * You usually would use the best-fit model resulting from Section 1. Instead, here we use a site-heterogenous model (`LG+C60`), which accounts for across-site variation in amino acid substitution profiles and has been shown to reduce systematic biases in phylogenomic inference, particularly for deep divergences and heterogeneous protein families.
+  
   #### Check the log-likelihood of the best tree:
   ```bash
   grep 'Log-likelihood of the tree' ml_tree.iqtree
@@ -112,16 +118,27 @@ This is the matrix you will use for the following steps.
 
   ℹ  NOTE
   *IQ-TREE output files:*
-  '.treefile'    — the best ML tree in Newick format (with support values)
-  '.iqtree'      — full analysis report (model, tree, AIC/BIC)
-  '.log'         — run log (iterations, likelihood values)
-  '.contree'     — consensus tree (50% majority rule)
+  `.treefile`    — the best ML tree in Newick format (with support values)
+  `.iqtree`      — full analysis report (model, tree, AIC/BIC)
+  `.log`         — run log (iterations, likelihood values)
+  `.contree`     — consensus tree (50% majority rule)
 
-  * You still have another option, that is to run both analyses at the same time, find which model is the best for your data, and infer the ML tree. You can do this with the 'TESTMERGE' option of IQ-tree:
+  * You still have another option, that is to run both analyses at the same time, find which model is the best for your data, and infer the ML tree. You can do this with the `TESTMERGE` option in IQ-tree to resemble [`PartitionFinder`](https://www.robertlanfear.com/partitionfinder/) (another software to search for the best-fit model):
   
   ```bash
-  iqtree -s Mollusca_FcC_supermatrix.fas -m TESTMERGE -bb 1000 -nt AUTO --prefix model_ml
+  iqtree -s Mollusca_FcC_supermatrix.fas -m TESTMERGE -B 1000 -T AUTO --prefix model_ml
   ```
+
+  #### Partitioned analysis
+  Assuming that all genes evolve under exactly the same model is unrealistic. That is why partitions are defined, and IQ-TREE or RAxML can estimate separate parameters for each partition. Because different genes are expected to evolve under distinct evolutionary constraints and substitution rates, the concatenated supermatrix can be analysed using a partitioned maximum-likelihood approach. Each orthogroup was treated as an independent partition, allowing model parameters to vary among genes and providing a more realistic representation of sequence evolution.
+
+  ```bash
+  iqtree -s Mollusca_FcC_supermatrix.fas -p FcC_supermatrix_partition.txt -m MFP+MERGE -B 1000 -T AUTO --prefix ml_partition
+  ```
+  `-p` defines the partition file; 
+  `-m MFP+MERGE` is using Model Finder to search the best-fit model for each partition and merge similar partitions; 
+  `-B 1000` corresponds to the minimum number of replicates accepted for UltraFast Bootstrap in IQtree; 
+  `-T AUTO` defines a random number of threads depending on the part of the analysis running
 
   ### 3.3 Non-parametric vs ultrafast bootstrap
 
