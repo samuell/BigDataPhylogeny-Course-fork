@@ -476,12 +476,12 @@ Files provided:
 Look at the FASTA headers:
 
 ```
->S_philippinensis|A0ABT3E9M6
->S_philippinensis|A0ABT3EDP3
->V_penis|A0A0H3MX54
->O_vulgaris|Q8DWU9
->O_vulgaris|Q8DX40
->O_vulgaris|Q8DX66
+>Sphi|A0ABT3E9M6
+>Sphi|A0ABT3EDP3
+>Vpen|A0A0H3MX54
+>Ovul|Q8DWU9
+>Ovul|Q8DX40
+>Ovul|Q8DX66
 ...
 ```
 
