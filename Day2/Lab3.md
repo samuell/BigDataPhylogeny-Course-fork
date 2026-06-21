@@ -504,30 +504,30 @@ Open one of the trees in FigTree (or paste into [iTOL](https://itol.embl.de/)) a
 You should see something like this pattern:
 
 ```
-            ┌── Crassostrea_gigas (copy 1)
+            ┌── S_philippinensis (copy 1)
         ┌───┤
-        │   └── Crassostrea_gigas (copy 2)
+        │   └── S_philippinensis (copy 2)
    ─────┤
-        │       ┌── Octopus_vulgaris (copy 1)
+        │       ┌── O_vulgaris (copy 1)
         │   ┌───┤
-        │   │   └── Octopus_vulgaris (copy 2)
+        │   │   └── O_vulgaris (copy 2)
         └───┤
-            └── Octopus_vulgaris (copy 3)
+            └── O_vulgaris (copy 3)
 ```
 
-The paralogs from the same species cluster tightly together as **sister branches with short branch lengths** — much shorter than the branches separating different species. This is the species-overlap signal PhyloPyPruner looks for automatically.
+The paralogs from the same species cluster tightly together as **sister branches with short branch lengths** (much shorter than the branches separating different species). This is the species-overlap signal PhyloPyPruner looks for automatically.
 
 ---
 
-## 8.4 Run PhyloPyPruner (5 min)
+## 8.4 Run PhyloPyPruner
 
 In your terminal:
 
 ```bash
-cd path/to/practical2_data
+cd path/to/lab3_data
 
-phylopypruner --msa OG0001135_mollusca.fasta \
-              --tree OG0001135_mollusca.tre \
+phylopypruner --msa OG0001135.fasta \
+              --tree OG0001135.treefile \
               --output OG0001135_pruned \
               --mask pdist \
               --prune MI
