@@ -1,0 +1,235 @@
+# Species Delimitation & Networks
+
+  ## 1. Introduction
+  The Southern Ocean nudibranch genus Tritonia has a messy taxonomic history: several named "species" turned out to be colour morphs of the same biological species, and at least one specimen had been misidentified for   decades. Rossi et al. (2021) used three markers  (*COI* (mitochondrial, protein-coding), *16S rRNA* (mitochondrial, non-coding), and *H3* (nuclear, protein-coding)), together with two species delimitation methods (*ABGD* and *GMYC*) to show that Antarctic/Weddell Sea specimens and Bouvet Island specimens form two clearly separated species: *T. challengeriana* and *T. dantarti*, regardless of their orange or white colouration.
+
+The molecular and morphological/colour stories disagree, which makes species delimitation results meaningful and discussable rather than a foregone conclusion. It pairs naturally with the mollusk datasets used in your other practicals. A follow-up study (Rossi et al. 2023, Cladistics; see 'further_reading' section) applied mPTP directly to this group and even resurrected an old genus name (*Myrella*) based on molecular species delimitation.
+
+  ### Objectives
+    By the end of this session, you should be able to:
+
+
+  * Explain what a single-locus species delimitation method does, and what it does not do.
+  * Run ASAP and mPTP on real data and interpret their output.
+  * Build a quick ML tree as input for tree-based delimitation (mPTP).
+  * Build a phylogenetic/haplotype network and explain how it differs from a tree.
+  * Critically compare tree and network representations of the same data, and identify when a network is showing you something a tree cannot.
+
+  ### Datasets and software
+  The original paper analyses 41 *Tritonia* ingroup specimens + 17 outgroup taxa (58 sequences) across three markers. We use here a reduced dataset: the full *Tritonia* ingroup, plus 2–3 outgroups only (one close relative for rooting, e.g. another Tritoniidae/Dendronotoidea species, rather than all four Proctonotoidea rooting taxa). 
+
+  For this session you'll need to use software pre-installed on your local computer:
+  * PopArt (https://popart.maths.otago.ac.nz/download/)
+  * SplitsTree (https://software-ab.cs.uni-tuebingen.de/download/splitstree6/welcome.html)
+
+  Also software hosted in online servers:
+  * mPTP ([https://link.springer.com/article/10.1007/s00300-021-02813-8](https://mptp.h-its.org/#/tree))
+  * ASAP
+  * GMYC (https://species.h-its.org/gmyc/)
+  * 
+
+
+## 2. BAMM analysis
+
+There are many ways to dected speciation events or diversification in evolutionary rates, for this practical we are going to start with a BAMM analysis.
+[BAMM](http://bamm-project.org/index.html) (Bayesian Analysis of Macroevolutionary Mixtures) is a method used to study how diversification rates have changed across a phylogenetic tree through evolutionary time.
+The central question BAMM addresses is:
+-   Have all lineages in a phylogeny diversified at the same rate, or have some groups experienced periods of accelerated or slowed diversification?
+
+In evolutionary biology, diversification refers to the balance between speciation (the formation of new species) and extinction. Many traditional analyses assume that diversification rates are constant across a phylogeny. However, this assumption is often unrealistic because different lineages may evolve under different ecological, geographical, or evolutionary conditions.
+
+BAMM was developed to detect these rate differences directly from a time-calibrated phylogeny. Rather than assuming a single diversification rate for the entire tree, BAMM allows diversification rates to vary among lineages and through time.
+
+For each scenario, BAMM estimates:
+
+- The number of diversification-rate shifts on the tree.
+- The location of those shifts.
+- Speciation rates through time.
+- Extinction rates through time.
+- Net diversification rates (speciation minus extinction).
+
+The most important concept in the BAMM is the *diversification rate shift*, which occurs when a lineage begins diversifying at a rate that differs from its ancestors or sister groups.
+This is what we are going to try identify in this excercise.
+
+
+### Input files
+
+You will need:
+- A rooted phylogenetic tree
+- Branch lengths proportional to time (an ultrametric tree).
+- Information about taxon sampling completeness.
+
+Important: The most complete the taxon sampling is more reliable are the estimations on the shifts!
+Go on the Data directory in GitHub, in the BAMM folder you will find:
+
+- Phylogenetic tree `coi_sequences.fasta.mafft.tree`
+- Control file to use in the BAMM `control_file.txt`
+
+First we use R to prepare the tree and the control file for the BAMM. 
+Download those 2 files from the the github and put them in a directory, open RStudio, and set the directory containing those files as wroking directory.
+
+First we will transform the tree ready for BAMM, then we will calculate the Prior and the Sampling fraction. 
+
+
+```R
+##BAMM analysis
+library(ape)
+library(phytools)
+
+#First we make the tree ultrametric. This is just for this practical, normally you will have a time calibrated topology, that is already ultrametric
+# Load tree
+tree <- read.tree("coi_sequences.fasta.mafft.tree")
+
+# Basic checks
+is.rooted(tree)
+is.binary.tree(tree)
+is.ultrametric(tree) #Bamm wants an ultrametric tree, if returned FALSE we need to convert it in ultrametric
+
+#root tree
+rooted_tree <- root(
+  tree,
+  outgroup = c(
+    "DQ026831.1_Dirona_picta_cytochrome_oxidase_subunit_1-like",
+    "KF643932.1_Dirona_albolineata_voucher_10BCMOL-00344_cytochrome_oxidase_subunit_1"
+  ),
+  resolve.root = TRUE
+)
+# Plot initial tree
+plot(rooted_tree, cex=0.4)
+title("Original COI tree (non-ultrametric)")
+
+# Convert to ultrametric using penalized likelihood
+# (chronos = fast relaxed clock method)
+chrono_tree <- chronos(rooted_tree)
+
+# Check ultrametricity
+is.ultrametric(chrono_tree)
+
+# Compare before/after
+par(mfrow=c(1,2))
+plot(rooted_tree, cex=0.4)
+title("Original tree")
+
+plot(chrono_tree, cex=0.4)
+title("Chronos ultrametric tree")
+
+# Optional: rescale root age (e.g. 100 time units)
+chrono_tree$edge.length <-
+  chrono_tree$edge.length *
+  (100 / max(node.depth.edgelength(chrono_tree)))
+
+# Final validation
+is.ultrametric(chrono_tree)
+
+
+# Save tree # This is the tree we are going to use as input for the BAMM
+write.tree(chrono_tree, file="nudibranch_ultrametric_chronos.tre")
+```
+Ok now we have the tree we need to calculate the priors and the sampling fraction. 
+
+```R
+# BAMM PIPELINE: Diversification rates in nudibranchs
+# Requires ultrametric tree from chronos or BEAST
+
+library(ape)
+library(BAMMtools)
+library(coda)
+
+# Load ultrametric tree
+rooted_tree <- read.tree("nudibranch_ultrametric_chronos.tre")
+
+# Check tree properties
+is.ultrametric(rooted_tree)
+is.binary.tree(rooted_tree)
+
+plot(rooted_tree, cex=0.4)
+title("Ultrametric tree for BAMM")
+
+#Calculate the sampling fraction
+#Based on species we have in our dataset, we need to calculate the sampling fractions (i.e. ratio species in tree/species described)
+#Remember the BAMM analysis needs to be aware of the taxon sampling!!
+sampling_fractions <- c(
+  Dirona = 2/3,
+  Tritonia = 8/20,
+  Myrella = 3/4,
+  Tritonicula = 2/5,
+  Candiella = 2/8,
+  Tritoniella = 1/2,
+  Marionia = 5/20,
+  Bornella = 5/10,
+  Leminda = 1/1,
+  Charcotia = 1/2
+)
+
+# Global sampling fraction (approx)
+global_sampling <- mean(sampling_fractions)
+writeLines(paste(global_sampling), con = "sampling_fractions.txt")
+##Copy and paste the sampling_fractions.txt file in the control file in:
+#globalSamplingFraction = 
+
+
+# Set the BAMM priors
+setBAMMpriors(tree,outfile = "bamm_priors.txt")
+##You wiil need to paste the values in the outfile in a specific section of # PRIORS the control file.
+```
+Have a look at the control file, you have many parameters that you can modify in it, plus the name of the different output files. The ones we care the most are the `event_data.txt` and tne `mcmc_out.txt`, which will load in R later to plot our results.
+
+Now we move on the terminal, to run the BAMM. We'll be back in R to analyse the output.
+Login in the terminal, and create a directory called BAMM. Load the `control_file.txt` and the `nudibranch_ultrametric_chronos.tre` in the `BAMM` directory. Run the following command:
+```sh
+./bamm -c control_file.txt
+```
+Let it run until the end, once it's done check which outputfiles have been created. Download them and move them into the previous directory we used to generate the tree and the priors. We now go back to Rstudio.
+
+```R
+# Load BAMM results
+library(coda)
+#Check convergence
+mcmc <- read.csv("Mollusca_bamm_mcmc_out.txt")
+
+plot(mcmc$logLik, type="l",
+     main="MCMC trace: log-likelihood")
+#Remove burnin
+burnstart <- floor(0.1 * nrow(mcmcout))
+postburn <- mcmcout[burnstart:nrow(mcmcout), ]
+#Check lolik before and after removing burnin
+effectiveSize(mcmc$logLik)
+effectiveSize(postburn$logLik)
+effectiveSize(postburn$N_shifts)
+
+#Plot diversification rates
+# Phylogenetic rate map
+plot.bammdata(edata,lwd = 2, spex = "s")
+addBAMMshifts(edata)
+
+#Identify rate shifts
+edata <- getEventData(rooted_tree, eventdata = "event_data.txt", burnin=0.25, type = "diversification")
+shift_probs <- summary(edata)
+computeBayesFactors(mcmcout, expectedNumberOfShifts=1, burnin=0.25)
+
+#Plot the shift identified by the BAMM
+q <- plot.bammdata(edata, legend=TRUE, lwd=2, method="phylogram", pal="BrBG", breaksmethod='jenks')
+css <- credibleShiftSet(edata, expectedNumberOfShifts=1, threshold=5, set.limit = 0.95)
+summary(css)
+plot.credibleshiftset(css, lwd=1.5, pal="BrBG")##compute the marginal shift probabilities
+
+# Plot the diversification through time
+
+plotRateThroughTime(edata)
+plotRateThroughTime(edata, rate = "speciation")
+plotRateThroughTime(edata, rate = "extinction")
+plotRateThroughTime(edata, rate = "netdiv")
+
+
+##plot a mean phylorate plot depicting net diversification rates
+q2 <- plot.bammdata(edata, legend=TRUE, lwd=2, method="phylogram", pal="BrBG", breaksmethod='jenks', spex = "netdiv")
+##plot histogram of rates
+ratesHistogram(q, plotBrks = TRUE, xlab = 'speciation rates')
+ratesHistogram(q2, plotBrks = TRUE, xlab = 'net diversification rates')
+```
+
+You should have generated many different plot, with the tree on credible shifts.
+
+- Which lineage started to diversify the most?
+- Looking at `plotRateThroughTime(edata, rate = "speciation")` plot, at what time the shift happened?
+
