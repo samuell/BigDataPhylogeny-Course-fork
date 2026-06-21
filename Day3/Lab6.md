@@ -55,49 +55,36 @@ Because every gene here is a genuine single-copy orthologue (one gene, one speci
 
 ### 1.3 The engineered DTL teaching families
 
-Because the core gene set has no real duplications, transfers, or losses to find, `data/lab6/dtl_engineered/` contains two gene families built by deliberately editing the core genes. `scripts/build_dtl_families.py` documents and reproduces exactly what was changed; read the comment block at the top of that script for the full details. In short:
+Because the core gene set has no real duplications, transfers, or losses to find, `data/lab6/dtl_engineered/` contains two gene families built by deliberately editing the core genes. In short:
 
 **FAMILY_A_DUP_LOSS** (built from the SCPA gene): a duplication was inserted on the branch leading to the cephalopod clade (*Sepiola atlantica*, *Octopus vulgaris*, *Nautilus pompilius*: node N14 on the species tree), so that *Sepiola* and *Octopus* now each carry two paralogous copies of this gene, while *Nautilus* only has one (the second copy was "lost"). All other 17 species are untouched, single-copy sequences.
 
-**FAMILY_B_HGT** (built from the RSMA gene): *Lingula anatina*'s gene was replaced with a lightly mutated copy of *Octopus vulgaris*'s gene, simulating a horizontal transfer between two very distant lineages — *Lingula* sits at the very base of the tree as the outgroup, while *Octopus* is deep inside the cephalopod clade, on the opposite side of the tree. All other 19 species keep their original, unmodified sequence.
+**FAMILY_B_HGT** (built from the RSMA gene): *Lingula anatina*'s gene was replaced with a lightly mutated copy of *Octopus vulgaris*'s gene, simulating a horizontal transfer between two very distant lineages, *Lingula* sits at the very base of the tree as the outgroup, while *Octopus* is deep inside the cephalopod clade, on the opposite side of the tree. All other 19 species keep their original, unmodified sequence.
 
 You already know the right answer for both families. Today's exercise is to check whether GeneRax recovers it.
 
-## 2. Setting up your environment
+## 2. DTL reconciliation with GeneRax 
 
-A conda environment file is provided so that everyone in class runs the exact same software versions.
-
-```bash
-conda env create -f environment.yml
-conda activate lab6-dtl-asr
-```
-
-(`mamba env create -f environment.yml` is equivalent and considerably faster if `mamba` is available on your machine.)
-
-This installs MAFFT (alignment), RAxML-NG (gene tree inference and ancestral sequence reconstruction), GeneRax (DTL reconciliation), and a few small helper packages (ete3, biopython, newick_utils, pandas, matplotlib). It does **not** install ThirdKind, the tool used to draw reconciled trees as pictures, because it is not reliably available through conda at the time of writing. Section 3.6 explains how to visualise your reconciliations without it.
-
-## 3. Part 1 — DTL reconciliation with GeneRax (around 50 minutes)
-
-### 3.1 What problem are we solving?
+### 2.1 What problem are we solving?
 
 A gene tree built from a sequence alignment does not always have the same shape as the species tree. There are several reasons this can happen: a gene was duplicated at some point, so today's genomes carry two or more copies that have since evolved independently (duplication, D); a gene copy was lost in some lineages (loss, L); or a gene moved horizontally between two lineages that are not directly related by descent (horizontal transfer, T). "Reconciliation" is the process of explaining the differences between a gene tree and a species tree as a minimal or most-likely combination of speciation, duplication, loss, and transfer events.
 
-GeneRax does this under a maximum-likelihood framework: given a multiple sequence alignment, a fixed species tree, and (optionally) a starting gene tree, it searches for the gene tree topology and the history of D/T/L events that together best explain both the sequence data and the reconciliation, jointly.
+`GeneRax` does this under a maximum-likelihood framework: given a multiple sequence alignment, a fixed species tree, and (optionally) a starting gene tree, it searches for the gene tree topology and the history of D/T/L events that together best explain both the sequence data and the reconciliation, jointly.
 
-### 3.2 Step 1 — Align the sequences
+### 2.2 Align the sequences
 
 Before any tree can be built, the sequences need to be aligned column-by-column so that homologous positions line up.
 
 ```bash
-bash scripts/step1_align.sh
+for f in *.fasta; do mafft --auto $f > aligned/"${f%.fasta}_aln.fasta"; done
 ```
 
-This runs MAFFT with its automatic mode (`--auto`) on every FASTA file in `data/core_gene_set/` and `data/dtl_engineered/`, writing the alignments to matching `aligned/` subfolders. Open one or two of the resulting `.aln.fasta` files in a text editor or alignment viewer (Jalview, AliView, or even just `less` in the terminal) and look at how similar the sequences already are.
+This runs MAFFT with its automatic mode (`--auto`) on every FASTA file in `data/lab6/core_gene_set/` and `data/lab6/dtl_engineered/`, writing the alignments to matching `aligned/` subfolders. Open one or two of the resulting `_aln.fa` files in a text editor or alignment viewer (Jalview, AliView, or even just `less` in the terminal) and look at how similar the sequences already are.
 
-### 3.3 Step 2 — Run GeneRax
+### 2.3 Run GeneRax
 
 ```bash
-bash scripts/step2_generax.sh
+bash scripts/generax.sh
 ```
 
 This script runs three separate GeneRax jobs, all against the same fixed species tree (`data/species_tree/species_tree.nwk`):
