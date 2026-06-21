@@ -77,6 +77,7 @@ You can rename the matrix as in `Mollusca_FcC_supermatrix.fas`.
   | --- | --- | --- |
   | GTR	| General Time Reversible: 6 substitution rate categories, most parameter-rich. | Nucleotide model |
   | HKY	| Hasegawa–Kishino–Yano: distinguishes transitions from transversions only. | Nucleotide model |
+  | LG | General matrix [(Le and Gascuel, 2008)](https://academic.oup.com/mbe/article/25/7/1307/1041491?login=false). | Protein model |
   | +F	| Empirical base frequencies estimated from the data. | - |
   | +I	| Proportion of invariable sites. | - |
   | +G4	| Gamma-distributed rate variation across sites (4 rate categories). | - |
