@@ -19,6 +19,8 @@ mamba install -c bioconda newick_utils  ##we didn't preinstall this package but 
 
 nw_display data/species_tree/species_tree.nwk
 ```
+<img width="1101" height="506" alt="image" src="https://github.com/user-attachments/assets/8f9de8d2-cc3f-4253-bfc7-778d4a693a65" />
+
 
 or open it in any Newick-compatible tree viewer (FigTree, iTOL) for a graphical view.
 
