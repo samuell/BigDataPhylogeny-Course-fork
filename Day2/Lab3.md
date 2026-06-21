@@ -529,7 +529,7 @@ cd path/to/lab3_data
 phylopypruner --dir PpP/ \
               --min-len 50 \
               --trim-lb 5 \
-              --min-taxa 10 \
+              --min-taxa 5 \
               --min-otu-occupancy 0.1 \
               --min-gene-occupancy 0.1 \
               --mask pdist \
@@ -557,35 +557,34 @@ phylopypruner --dir PpP/ \
 Run it, then look inside the output folder:
 
 ```bash
-ls OG0001135_pruned/
+ ls PpP/phylopypruner_output/
 ```
 
-You should find a **pruned alignment** and a **pruned tree** containing exactly **one sequence per species** — your dataset is now ortholog-only and safe to use for species tree inference.
+You should find a folder with **pruned alignments** (`output_alignments/`) and some other files (`input_alignment_stats.csv, otu_stats.csv, phylopypruner.log, supermatrix_stats.csv, otu_list.txt, output_alignment_stats.csv, partition_data.txt, supermatrix.fas`). Your dataset is now ortholog-only and safe to use for species tree inference, for instance. Take some time to take a look at these output files.
 
 ```bash
-grep ">" OG0001135_pruned/*.fa     # or similar, check the output file naming
+grep ">" PpP/phylopypruner_output/output_alignments/*.fasta     
 ```
 
-**Check:** count the sequences before and after. You started with 14 sequences across 8 species; you should end with one representative per species (8 sequences).
+**Check:** count the sequences before and after. You should end with one representative per species.
+
+Along the way, some markers may have been lost, because the options we set are quite restrictive. If you simply want to remove paralogs and keep everything else, you can do a more relaxed search.
+
+```bash
+phylopypruner --dir PpP/ --prune LS --threads 4 --output pruned
+```
 
 ---
 
 ## 8.5 Discussion
 
 - What would happen if we'd skipped this step and just concatenated all 14 sequences as if they were 14 different "species"?
-- PhyloPyPruner used `--mask pdist` to pick *which* paralog to keep. What's an alternative criterion, and when might it matter? *(e.g. `--mask longest` — keeping the longest sequence makes sense if you're worried about incomplete/fragmented assemblies rather than true paralogy.)*
-- In a real OrthoFinder run across your whole proteome set, you won't run this on one orthogroup by hand — you'd point `--dir` at a folder containing **all** orthogroup alignments + trees, and PhyloPyPruner processes them in batch. Same logic, just scaled up.
+- PhyloPyPruner used `--mask pdist` to pick *which* paralog to keep. What's an alternative criterion, and when might it matter? *(e.g. `--mask longest`: keeping the longest sequence makes sense if you're worried about incomplete/fragmented assemblies rather than true paralogy.)*
+- In a real OrthoFinder run across your whole proteome set, you won't run this on one orthogroup by hand, you'd point `--dir` at a folder containing **all** orthogroup alignments + trees, and PhyloPyPruner processes them in batch. Same logic, just scaled up.
 
 ---
 
-## Recap
-
-- [ ] Understood the difference between orthologs and paralogs and why it matters for species tree inference
-- [ ] Inspected a gene tree and visually identified paralog clusters
-- [ ] Ran PhyloPyPruner on one orthogroup using `--msa`, `--tree`, `--mask`, `--prune`
-- [ ] Confirmed the pruned output contains one sequence per species
-
-**Next:** we'll take pruned, single-copy orthogroups like this one — but now across hundreds of genes — and concatenate them into a supermatrix for tree inference.
+ℹ  Note that the logic we used here is not what we would do naturally. Generally, `OrthoFinder` is run first, then the gene trees are generated (if we don't have them from the OF output), and the paralogs are filtered to be able to generate the concatenated matrix. We look at which model is the best, and we infer the phylogeny. Here, for educational purposes, it seemed more logical to first explain how phylogenies are inferred and then do the paralog filtering, since to use PpP we need to already have the alignments and gene trees.
 
 ---
 
@@ -596,24 +595,10 @@ Answer the following questions individually or in groups. Be prepared to discuss
 - Your colleague argues that a clade with 100% ultrafast bootstrap support 'must be true'. How would you respond? What factors could still make the clade an artefact?
 - You have two trees: Tree A (ML, bootstrap = 88%) and Tree B (Bayesian, posterior = 0.99) disagree on the placement of one taxon. How do you decide which to trust? What additional analyses could help?
 - Explain in your own words the difference between a consensus tree and a single best ML tree. In which situations would you prefer to report each?
-- Why is it important to apply a topology test when comparing an ML tree to an alternative tree based on morphological data?
+- Why is it important to apply a topology test when comparing a ML tree to an alternative tree based on morphological data?
 - A phylogenomic study uses 500 genes but recovers very short internal branches with low bootstrap values. What phylogenetic phenomenon might explain this, and how could you test for it?
 
 
-
-
-    
-
-
-
-
-
-  
-
-
-
-
-
-
+**Have a break, you need to digest all this information!**
 
 
