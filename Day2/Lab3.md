@@ -117,14 +117,13 @@ You can rename the matrix as in `Mollusca_FcC_supermatrix.fas`.
   ```
   *Key files: 'ml_tree.treefile' (best ML tree with support), 'ml_tree.iqtree' (full report).*
 
+ℹ  NOTE
+*IQ-TREE output files:*
+`.treefile`    — the best ML tree in Newick format (with support values)
+`.iqtree`      — full analysis report (model, tree, AIC/BIC)
+`.log`         — run log (iterations, likelihood values)
+`.contree`     — consensus tree (50% majority rule)
 
-  ℹ  NOTE
-  *IQ-TREE output files:*
-  `.treefile`    — the best ML tree in Newick format (with support values)
-  `.iqtree`      — full analysis report (model, tree, AIC/BIC)
-  `.log`         — run log (iterations, likelihood values)
-  `.contree`     — consensus tree (50% majority rule)
-  
 
   * You still have another option, that is to run both analyses at the same time, find which model is the best for your data, and infer the ML tree. You can do this with the `TESTMERGE` option in IQ-tree to resemble [`PartitionFinder`](https://www.robertlanfear.com/partitionfinder/) (another software to search for the best-fit model):
   
