@@ -124,6 +124,7 @@ You can rename the matrix as in `Mollusca_FcC_supermatrix.fas`.
   `.log`         — run log (iterations, likelihood values)
   `.contree`     — consensus tree (50% majority rule)
 
+
   * You still have another option, that is to run both analyses at the same time, find which model is the best for your data, and infer the ML tree. You can do this with the `TESTMERGE` option in IQ-tree to resemble [`PartitionFinder`](https://www.robertlanfear.com/partitionfinder/) (another software to search for the best-fit model):
   
   ```bash
