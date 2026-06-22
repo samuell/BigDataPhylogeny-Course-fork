@@ -41,7 +41,7 @@ In data you will find the genomes we have selected for you: E.g.  `data/Cgigas.f
 ### All-vs-all protein search with DIAMOND
 
 We are now find similar protein pairs within and between species, this will be the evidence synteny detection is built on.
-From the `mollusc_synteny` just run copy paste the next block. It will take around 8 min to run. If it gets stuck for memory reason call us and we can provide the diamond output.
+From the `mollusc_synteny` just copy paste the entire next code block in the terminal. It will take around 8 min to run. If it gets stuck for memory reason call us and we can provide the diamond output.
 
 ```bash
 cd blast
