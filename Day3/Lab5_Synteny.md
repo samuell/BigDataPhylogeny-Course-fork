@@ -6,7 +6,7 @@
 Synteny matters because:
 - It is independent evidence for orthology (same gene by descent), on top of sequence similarity.
 - Long conserved blocks tell us which ancestral chromosome arrangements have survived; broken synteny tells us where genome reshuffling happened.
-- In molluscs specifically, bivalves, gastropods, and cephalopods diverged hundreds of millions of years ago and show very different amounts of genome reshuffling — making this a great system to *see* synteny erosion happen, not just read about it.
+- In molluscs specifically, bivalves, gastropods, and cephalopods diverged hundreds of millions of years ago and show very different amounts of genome reshuffling, making this a great system to *see* synteny erosion happen.
 
 ### Dataset and tutorial
 Here we want to visualize the synteny of 3 mollusc species.
@@ -18,9 +18,9 @@ One per major molluscan lineage, all chromosome-level RefSeq assemblies:
 | *Pomacea canaliculata* | Golden apple snail | Gastropoda | GCF_003073045.1 |
 | *Octopus bimaculoides* | Two-spot octopus | Cephalopoda | GCF_001194135.2 |
 
-**IMPORTANT**: you will need chromosome-level genomes with the annotations and the proteomes, otherwise yyou want be able to infer the orthology and create the synteny blocks.
+**IMPORTANT**: you will need chromosome-level genomes with the annotations and the proteomes, otherwise you will not be able to infer the orthology and create the synteny blocks.
 
-In this tutorial we are going to run DIAMOND to generate the all_vs_all output needed to run MCScanX.
+In this tutorial, we will run DIAMOND to generate the all_vs_all output needed to run MCScanX.
 
 
 ```bash
@@ -28,20 +28,20 @@ cp -r /home/ubuntu/Share/mollusc_synteny/ .
 cd mollusc_synteny
 conda activate synteny
 ```
-Here is the structure of the directory
+Here is the  directory's structure.
 ```
 mollusc_synteny/
 ├── data/        # downloaded genomes, proteomes, GFF
 ├── blast/       # all-vs-all DIAMOND/BLAST output
 ├── synteny/     # MCScanX input/output
 ```
-In data you will find the genomes we have selected for you: E.g.  `data/Cgigas.faa`, `data/Cgigas.gff` , and for the other two species  The `.faa` should have 20,000-40,000 protein sequences (`grep -c ">" data/Cgigas.faa`).
+In data, you will find the genomes we have selected for you:  `data/Cgigas.faa`, `data/Cgigas.gff`, and for the other two species  The `.faa` should have 20,000-40,000 protein sequences (`grep -c ">" data/Cgigas.faa`).
 
 
 ### All-vs-all protein search with DIAMOND
 
-We are now find similar protein pairs within and between species, this will be the evidence synteny detection is built on.
-From the `mollusc_synteny` just copy paste the entire next code block in the terminal. It will take around 8 min to run. If it gets stuck for memory reason call us and we can provide the diamond output.
+We now need to find similar protein pairs within and between species, this will be the evidence synteny detection is built on.
+From the `mollusc_synteny` just copy paste the entire next code block in the terminal. It will take around 8 min to run. If it gets stuck for memory reasons, call us, and we can provide the diamond output.
 
 ```bash
 cd blast
@@ -137,11 +137,14 @@ MCScanX mollusc
 ### Visualization
 
 **SynVisio** 
-Now follow this link and upload just upload your `mollusc.gff` and `mollusc.collinearity` files there to generate an interactive plot.
-Do not get scared of the very low matching number. Go on the right side, in the filter panel, in the `source chromosome` and `target chromosome` click on select all, and then click go. These are the 3 species with an all vs all plot. 
+Now follow this [link](https://synvisio.github.io/#/) and upload just upload your `mollusc.gff` and `mollusc.collinearity` files there to generate an interactive plot.
+
+ Go to the filter panel on the right side of the page. In the `source chromosome` and `target chromosome` click on select all, and then click go. These are the 3 species with an all vs all plot. 
 You can try and compare Cassostrea gigas (cgi) vs Snail (pca) or Cassostrea vs Octopus (opi).
 
 Play around Synvisio, you can zoom in specific chromosomes and check which blocks have moved.
-Remember that these species have diverged more than 500 My ago, it is normal that synteny is low.
+Don't worry, the low matching number is normal! Remember we are comparing 3 species very different from each other.
+Remember that these species have diverged more than 500 My ago!
+
 1. **Oyster vs. snail:** do you see any diagonal lines / colored ribbons indicating conserved gene order, even if patchy?
 2. **Either species vs. octopus:** is synteny mostly or entirely absent? This is expected — cephalopod genomes are known to be heavily reorganized relative to other molluscs.
