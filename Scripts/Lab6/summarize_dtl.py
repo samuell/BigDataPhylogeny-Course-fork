@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """
-Lab 6 helper — summarize_dtl.py
 
 Reads a GeneRax `<family>_speciesEventCounts.txt` file and prints a short,
 readable summary: total D/T/L events, and which species-tree branches
