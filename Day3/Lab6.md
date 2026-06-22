@@ -197,8 +197,8 @@ This runs:
 
 ```bash
 raxml-ng --ancestral \
-    --msa data/core_gene_set/aligned/RS9_OG0000545.aln.fasta \
-    --tree data/species_tree/species_tree.nwk \
+    --msa data/asr/RS9_OG0000545.fasta \
+    --tree data/asr/species_tree.nwk \
     --model LG+G \
     --prefix results/ASR_RS9
 ```
@@ -215,13 +215,13 @@ Open `results/ASR_RS9.raxml.ancestralStates` in a text editor. Each line has a n
 
 **Questions:**
 
-1. Compare the reconstructed sequence at N1 (the root — the common ancestor of all 20 species, including the outgroup *Lingula anatina*) with the sequence at N14 (the ancestor of the three cephalopods). How many positions differ? Is this what you would expect, given how long ago these two ancestors lived relative to each other on the tree?
+1. Compare the reconstructed sequence at N1 (the root, the common ancestor of all 20 species, including the outgroup *Lingula anatina*) with the sequence at N14 (the ancestor of the three cephalopods). How many positions differ? Is this what you would expect, given how long ago these two ancestors lived relative to each other on the tree?
 2. Pick any one of the 20 present-day species and compare its real sequence (from the alignment) to the reconstructed sequence at its immediate ancestral node (its parent in the species tree). How many differences are there? What does a small number of differences tell you about how conserved this gene is along that particular branch?
 3. Open `results/ASR_RS9.raxml.ancestralProbs` and find one site (column) where the probability is split fairly evenly between two amino acids (for example, no single amino acid has more than 60% posterior probability), versus a site where one amino acid has more than 99% probability. What does the difference between these two situations tell you about how much we should trust the single "best guess" sequence reported in `.ancestralStates`, site by site?
 
-### 3.5 (Optional, going further) ASR on a gene tree instead of the species tree
+### 3.5 ASR on a gene tree instead of the species tree
 
-Everything above used the fixed species tree as the backbone for ASR — a reasonable simplification for a first exercise, because we know this gene has no duplications or losses (Section 1.2), so its gene tree and the species tree should have essentially the same shape anyway. In a real research project working with a larger, messier gene family, you would normally use the gene family's own ML gene tree (for example, the one GeneRax inferred for you in Part 1) for the ASR step instead, since that is the tree that actually describes the gene's history, not the species' history. If you have time, try rerunning Section 4.3 using one of the gene trees produced by GeneRax in Part 1 (look inside `results/baseline_UndatedDTL/` for an inferred gene tree file) instead of `species_tree.nwk`, and see whether your reconstructed ancestral sequences change.
+Everything above used the fixed species tree as the backbone for ASR, because we know this gene has no duplications or losses (Section 1.2), so its gene tree and the species tree should have essentially the same shape anyway. In a real research project working with a larger, messier gene family, you would normally use the gene family's own ML gene tree (for example, the one GeneRax inferred for you in section 1) for the ASR step instead, since that is the tree that actually describes the gene's history, not the species' history. If you have time, try rerunning Section 4.3 using one of the gene trees produced by GeneRax in Part 1 (look inside `results/baseline_UndatedDTL/` for an inferred gene tree file) instead of `species_tree.nwk`, and see whether your reconstructed ancestral sequences change.
 
 ---
 
