@@ -1,0 +1,9 @@
+[FAMILIES]
+- FAMILY_A_DUP_LOSS
+alignment = data/dtl_engineered/aligned/FAMILY_A_DUP_LOSS_aln.fasta
+mapping = data/dtl_engineered/FAMILY_A_DUP_LOSS.link
+subst_model = LG+G
+
+- FAMILY_B_HGT
+alignment = data/dtl_engineered/aligned/FAMILY_B_HGT_aln.fasta
+subst_model = LG+G
