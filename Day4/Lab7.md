@@ -90,11 +90,16 @@ By the end of this session, you should be able to:
   ### 2.3 Submit the job to mPTP server
   1.	Go to: https://mptp.h-its.org/#/tree
   2.	Upload your ML tree file (e.g. coi_tritonia.raxml.bestTree).
-  3.	Set minimum branch length to 0.0001 (or leave default).
-  4.	Select 'Single' or 'Multi' rate — try both and compare.
-  5.	Click Run and download the result file and image.
+  3.	Select the outgroup, based on the publication, probably the outgroup here corresponds to the **Proctonotidae** clade. 
+  4.	Select 'Single' (PTP) or 'Multi' (mPTP) rate try both and compare.
+  5.	Set your email address to receive the results and a notice when the run is finished.
+  6.	Click Run and download the result file and image.
 
+  We try in parallel using mPTP installed in the server:
 
+  ```bash
+  mptp --ml --multi --outgroup 'HM162745_Leminda-millecra_S.A.-Western-Cape-Province','GQ292060_Curnon-granulosa_Antarctica-Ross-sea','KF643932_Dirona-albolineata_unknown','DQ026831_Dirona-picta_unknown' --outgroup_crop
+  ```
 
 
 
