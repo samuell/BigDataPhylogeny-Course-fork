@@ -9,7 +9,7 @@ Two of the six core genes were also used as the starting point for two **constru
 
 ### 1.1 The species tree
 
-`Lab6/data/species_tree.nwk` contains a fixed, rooted, bifurcating tree of 20 species, with *Lingula anatina* (a brachiopod, not a mollusc) as the outgroup, the same outgroup choice used in the source study. Internal nodes are pre-labelled N1 to N19 so you can refer to specific ancestors by name (for example, "the ancestor of the cephalopods is N14").
+`Lab6/data/species_tree_rn.nwk` contains a fixed, rooted, bifurcating tree of 20 species, with *Lingula anatina* (a brachiopod, not a mollusc) as the outgroup, the same outgroup choice used in the source study. Internal nodes are pre-labelled N1 to N19 so you can refer to specific ancestors by name (for example, "the ancestor of the cephalopods is N14").
 
 You can view the tree directly in the terminal at any point with:
 
@@ -17,7 +17,7 @@ You can view the tree directly in the terminal at any point with:
 conda activate lab6
 mamba install -c bioconda newick_utils  ##we didn't preinstall this package but it is pretty useful for tree visualisation and very easy to install
 
-nw_display data/species_tree/species_tree.nwk
+nw_display Lab6/data/species_tree_rn.nwk
 ```
 <img width="1101" height="506" alt="image" src="https://github.com/user-attachments/assets/8f9de8d2-cc3f-4253-bfc7-778d4a693a65" />
 
@@ -40,7 +40,7 @@ N16 groups the chitons and aplacophorans together (the Aculifera clade); N2 is t
 
 ### 1.2 The core gene set (single-copy orthologues)
 
-`data/lab6/core_gene_set/` contains six single-copy protein-coding gene families, each present in all 20 species exactly once. They were chosen because they are short, well-conserved, easy-to-align genes, exactly the kind of gene family you would use to first sanity-check a pipeline in a real research project, before tackling messier, larger gene families.
+`Lab6/data/core_gene_set/` contains six single-copy protein-coding gene families, each present in all 20 species exactly once. They were chosen because they are short, well-conserved, easy-to-align genes, exactly the kind of gene family you would use to first sanity-check a pipeline in a real research project, before tackling messier, larger gene families.
 
 | Gene | File | Length (aa) | Notes |
 |---|---|---|---|
@@ -80,7 +80,7 @@ Before any tree can be built, the sequences need to be aligned column-by-column 
 for f in *.fasta; do mafft --auto $f > aligned/"${f%.fasta}_aln.fasta"; done
 ```
 
-This runs MAFFT with its automatic mode (`--auto`) on every FASTA file in `data/lab6/core_gene_set/` and `data/lab6/dtl_engineered/`, writing the alignments to matching `aligned/` subfolders. Open one or two of the resulting `_aln.fa` files in a text editor or alignment viewer (Jalview, AliView, or even just `less` in the terminal) and look at how similar the sequences already are.
+This runs MAFFT with its automatic mode (`--auto`) on every FASTA file in `Lab6/data/core_gene_set/` and `Lab6/data/dtl_engineered/`, writing the alignments to matching `aligned/` subfolders. Open one or two of the resulting `_aln.fa` files in a text editor or alignment viewer (Jalview, AliView, or even just `less` in the terminal) and look at how similar the sequences already are.
 
 ### 2.3 Run GeneRax
 
@@ -88,7 +88,7 @@ This runs MAFFT with its automatic mode (`--auto`) on every FASTA file in `data/
 bash scripts/generax.sh
 ```
 
-This script runs three separate GeneRax jobs, all against the same fixed species tree (`data/species_tree/species_tree.nwk`):
+This script runs three separate GeneRax jobs, all against the same fixed species tree (`Lab6/data/species_tree/species_tree.nwk`):
 
 1. The **baseline** core gene set (RS7, SSRP, TRMD, SCPA, RSMA), under the full duplication+transfer+loss model (`UndatedDTL`).
 
