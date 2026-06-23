@@ -33,7 +33,7 @@ If you want to know more about conda you can have a look at the [cheat sheet her
 
 Now we are ready to infer our orthologous genes, it will take a while to run. Lunch it and please keep going with the tutorial, while it runs to completion. We will go back to it at the end of this practical session.
 ```
-orthofinder -a 8 -f /Proteomes 
+orthofinder -f Proteomes/
 ```
 It will take 40 minutes to run, let it run, you will go back to the output later.
 
