@@ -108,7 +108,7 @@ By the end of this session, you should be able to:
 
 
 
-## 2. BAMM analysis
+## 3. BAMM analysis
 
 There are many ways to dected speciation events or diversification in evolutionary rates, for this practical we are going to start with a BAMM analysis.
 BAMM (Bayesian Analysis of Macroevolutionary Mixtures) is a method used to study how diversification rates have changed across a phylogenetic tree through evolutionary time.
