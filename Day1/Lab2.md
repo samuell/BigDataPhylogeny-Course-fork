@@ -83,7 +83,7 @@ If not, we have a folder prepared that you can access and look at the output. Ki
 
 
 Our goal is to identify the orthologous genes that we will use to create the super alignment to infer the mollusc phylogeny. 
-In our case, the repository where we can find them is `Share/Single_Copy_Orthologue_Sequences` 
+In our case, the repository where we can find them is `/home/user_number/Share/Single_Copy_Orthologue_Sequences` 
 
 If you have good quality genomes, normally you will end up with a set of genes that orthofinder has identified as single copy orthologs (i.e. true orthologs) and you could ideally start you analysis from these set of genes. Supposedely, these genes do not contain paralogs. 
 In case you are not so lucky (especially when using a lot of transcriptomes), most likely you will have to fish out you genes from the `Orthogroups` of `Orthologues` folders.
@@ -104,7 +104,7 @@ conda activate BigDataPhylo
 #if you want to know which softwares are installed in the environment you can type
 conda list #it will provide a list of all packages and dependencies you will use in the next practicals
 #Copy the entire directory in your home directory
-cp -r /home/ubuntu/Share/Single_Copy_Orthologue_Sequences .
+cp -r /home/user_number/Share/Single_Copy_Orthologue_Sequences .
 ```
 You should now have all the fastas in the repository. Enter into the directory using `cd` and check with `ls *fa | wc -l `
 It should tell you how many you have.
