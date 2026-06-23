@@ -94,7 +94,7 @@ This script runs three separate GeneRax jobs, all against the same fixed species
 ```bash
 generax \
     --families data/core_gene_set/families_baseline.txt \
-    --species-tree "$SPECIES_TREE" \
+    --species-tree data/species_tree/species_tree.nwk \
     --rec-model UndatedDTL \
     --per-family-rates \
     --reconcile \
@@ -107,7 +107,7 @@ generax \
 ```bash
 generax \
     --families data/dtl_engineered/families_engineered.txt \
-    --species-tree "$SPECIES_TREE" \
+    --species-tree data/species_tree/species_tree.nwk \
     --rec-model UndatedDTL \
     --per-family-rates \
     --reconcile \
@@ -120,7 +120,7 @@ generax \
 ```bash
 generax \
     --families data/dtl_engineered/families_engineered.txt \
-    --species-tree "$SPECIES_TREE" \
+    --species-tree data/species_tree/species_tree.nwk \
     --rec-model UndatedDL \
     --per-family-rates \
     --reconcile \
