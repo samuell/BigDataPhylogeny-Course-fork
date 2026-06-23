@@ -9,7 +9,7 @@ Two of the six core genes were also used as the starting point for two **constru
 
 ### 1.1 The species tree
 
-`data/lab6/species_tree.nwk` contains a fixed, rooted, bifurcating tree of 20 species, with *Lingula anatina* (a brachiopod, not a mollusc) as the outgroup, the same outgroup choice used in the source study. Internal nodes are pre-labelled N1 to N19 so you can refer to specific ancestors by name (for example, "the ancestor of the cephalopods is N14").
+`Lab6/data/species_tree.nwk` contains a fixed, rooted, bifurcating tree of 20 species, with *Lingula anatina* (a brachiopod, not a mollusc) as the outgroup, the same outgroup choice used in the source study. Internal nodes are pre-labelled N1 to N19 so you can refer to specific ancestors by name (for example, "the ancestor of the cephalopods is N14").
 
 You can view the tree directly in the terminal at any point with:
 
