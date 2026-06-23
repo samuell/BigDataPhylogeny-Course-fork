@@ -9,6 +9,7 @@
 The molecular and morphological/colour stories disagree, which makes species delimitation results meaningful and discussable rather than a foregone conclusion. It pairs naturally with the mollusc datasets used in your other practicals. 
 
   ### Objectives
+  
     By the end of this session, you should be able to:
 
   * Interpret geographic patterns in phylogenetic trees (phylogeography).
@@ -24,7 +25,7 @@ The molecular and morphological/colour stories disagree, which makes species del
 
 ## 1. Simple Phylogeographic Example: Interpreting Geographic Patterns in Trees
   ### 1.1 Background
-  The nudibranch genus *Tritonia* provides a textbook case of how molecular phylogenetics resolves taxonomic puzzles that morphology alone cannot. ]Rossi et al. (2021)](https://link.springer.com/article/10.1007/s00300-021-02813-8) collected specimens from the Weddell Sea (high Antarctic, ~70–75°S) and Bouvet Island (Sub-Antarctic, ~54°S), covering depths from 130 to 789 m. Both sites harbour orange and white colour morphs, which were previously considered distinct species or at least diagnostically useful characters.
+  The nudibranch genus *Tritonia* provides a textbook case of how molecular phylogenetics resolves taxonomic puzzles that morphology alone cannot. [Rossi et al. (2021)](https://link.springer.com/article/10.1007/s00300-021-02813-8) collected specimens from the Weddell Sea (high Antarctic, ~70–75°S) and Bouvet Island (Sub-Antarctic, ~54°S), covering depths from 130 to 789 m. Both sites harbour orange and white colour morphs, which were previously considered distinct species or at least diagnostically useful characters.
 
 **Key finding**: COI + 16S + H3 data placed Weddell Sea specimens in one strongly supported clade (PP = 1, BS = 100) and Bouvet Island specimens in another (PP = 1, BS = 98), regardless of colour. Two species were supported by both ABGD and GMYC: *T. challengeriana* (circum-Antarctic) and *T. dantarti* (Bouvet Island endemic).
 
