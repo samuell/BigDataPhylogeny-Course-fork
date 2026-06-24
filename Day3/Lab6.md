@@ -44,8 +44,13 @@ A quick guide to the 20 species and where they sit on the tree:
 N16 groups the chitons and aplacophorans together (the Aculifera clade); N2 is the ancestor of all 19 molluscs in the tree, with *Lingula anatina* attaching at the root, N1.
 
 ### 1.2 The core gene set (single-copy orthologues)
+Now copy the sequences, they are in two different folders:
+```bash
+cp -r /home/ubuntu/Share/Lab6/data/core_gene_set/ .
+cp -r /home/ubuntu/Share/Lab6/data/dtl_engineered/ .
+```
 
-`Lab6/data/core_gene_set/` contains six single-copy protein-coding gene families, each present in all 20 species exactly once. They were chosen because they are short, well-conserved, easy-to-align genes, exactly the kind of gene family you would use to first sanity-check a pipeline in a real research project, before tackling messier, larger gene families.
+`core_gene_set/` contains six single-copy protein-coding gene families, each present in all 20 species exactly once. They were chosen because they are short, well-conserved, easy-to-align genes, exactly the kind of gene family you would use to first sanity-check a pipeline in a real research project, before tackling messier, larger gene families.
 
 | Gene | File | Length (aa) | Notes |
 |---|---|---|---|
@@ -60,7 +65,7 @@ Because every gene here is a genuine single-copy orthologue (one gene, one speci
 
 ### 1.3 The engineered DTL teaching families
 
-Because the core gene set has no real duplications, transfers, or losses to find, `data/lab6/dtl_engineered/` contains two gene families built by deliberately editing the core genes. In short:
+Because the core gene set has no real duplications, transfers, or losses to find, `dtl_engineered/` contains two gene families built by deliberately editing the core genes. In short:
 
 **FAMILY_A_DUP_LOSS** (built from the SCPA gene): a duplication was inserted on the branch leading to the cephalopod clade (*Sepiola atlantica*, *Octopus vulgaris*, *Nautilus pompilius*: node N14 on the species tree), so that *Sepiola* and *Octopus* now each carry two paralogous copies of this gene, while *Nautilus* only has one (the second copy was "lost"). All other 17 species are untouched, single-copy sequences.
 
