@@ -37,6 +37,10 @@ perl FASconCAT-G_v1.04.pl -l -s
 ```
 Once it's done, you'll see that the script has created three files `FcC_info.xls  FcC_supermatrix.fas  FcC_supermatrix_partition.txt` . The supermatrix is what we need for the next steps.
 You can rename the matrix as in `Mollusca_FcC_supermatrix.fas`.
+
+```sh
+mv FcC_supermatrix.fas Mollusca_FcC_supermatrix.fas
+```
 **This is the matrix you will use for the following steps.**
 
 ---
