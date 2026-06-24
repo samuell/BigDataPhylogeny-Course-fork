@@ -8,15 +8,21 @@ Two of the six core genes were also used as the starting point for two **constru
 ## 1. Data overview
 
 ### 1.1 The species tree
+Create a folder for this practical and copy the data in the folder created:
+```bash
+mkdir -p Lab6/data
+cd Lab6/data/
+cp /home/ubuntu/Share/Lab6/data/species_tree_rn.nwk .
+```
 
-`Lab6/data/species_tree_rn.nwk` contains a fixed, rooted, bifurcating tree of 20 species, with *Lingula anatina* (a brachiopod, not a mollusc) as the outgroup, the same outgroup choice used in the source study. Internal nodes are pre-labelled N1 to N19 so you can refer to specific ancestors by name (for example, "the ancestor of the cephalopods is N14").
+`species_tree_rn.nwk` contains a fixed, rooted, bifurcating tree of 20 species, with *Lingula anatina* (a brachiopod, not a mollusc) as the outgroup, the same outgroup choice used in the source study. Internal nodes are pre-labelled N1 to N19 so you can refer to specific ancestors by name (for example, "the ancestor of the cephalopods is N14").
 
 You can view the tree directly in the terminal at any point with:
 
 ```bash
 conda activate lab6
 
-nw_display Lab6/data/species_tree_rn.nwk
+nw_display species_tree_rn.nwk
 ```
 <img width="1101" height="506" alt="image" src="https://github.com/user-attachments/assets/8f9de8d2-cc3f-4253-bfc7-778d4a693a65" />
 
