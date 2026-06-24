@@ -166,7 +166,7 @@ mv FcC_supermatrix.fas Mollusca_FcC_supermatrix.fas
   - How many parsimony-informative sites does the alignment contain? (Look in the .iqtree report.)
   - Would you expect the tree topology to change if you used a simpler model (e.g., JC)? Why?
 
-## 4. Optional: Bayesian Inference (BI)
+## 4. OPTIONAL-DO NOT NEED to RUN THIS: Bayesian Inference (BI)
 The gold standard in phylogenomic studies is to run both ML and BI inference, however sometimes running BI requires too much computational power (e.g. >500 genomes, very deep nodes, convergence problems). It is not feasible to run `Phylobayes` for the time we have in this course, it will take at least a week to go close to convergence. Nevertheless, here we leave you instructions in case you would like to try and run BI inference with [Phylobayes](https://github.com/bayesiancook/phylobayes/blob/master/pbManual4.1.pdf) in the future. 
 
   ### 4.1 Phylobayes
@@ -234,7 +234,7 @@ tracecomp -x 1000 Mollusca_catpoisson_chain1 Mollusca_catpoisson_chain2
 #statalpha           371		0.0763524
 
   ```
-ℹ  Of course, we have run the BI for you. You can check the results by copying the files folder for this practical. 
+Of course, we have run the BI for you. The topology is on the Data/Lab3/ folder in this github directory. 
 
 ---
 
