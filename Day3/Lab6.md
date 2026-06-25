@@ -193,6 +193,9 @@ GeneRax's `.xml` output can be turned into a picture showing the gene tree embed
 <img width="1908" height="1010" alt="image" src="https://github.com/user-attachments/assets/8153069a-25c4-4ec3-a1a9-1faecf494601" />
 
 
+
+You can also try [icytree](https://icytree.org/) to visualise the xml trees.
+
 There are many different options where you can apply reconciliation. One of them is using [SpeciesRax](https://academic.oup.com/mbe/article/39/2/msab365/6503503). Because of time constraints, we are not using it here, but we leave you some commands that can try to run at home if interested.
 
 
