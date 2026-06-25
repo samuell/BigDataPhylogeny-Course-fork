@@ -111,11 +111,31 @@ By the end of this session, you should be able to:
   1. Go to the [ASAP website](https://bioinfo.mnhn.fr/abi/public/asap/). It seems that the website is down, but you can visit this [site](https://itaxotools.org/download.html#hyperlinkDelimit) and download the program. It is pretty simple to install.
   2. Upload the COI alignment in FASTA format.
   3. Choose distance model: Kimura 2-parameter (K80).
-  4. Click Analyse. ASAP presents ranked partitions with an ASAP-score.
+  4. Click `Analyse` (in the website) or `RUN` (in the app). ASAP presents ranked partitions with an ASAP-score. # If it takes too long, you can leave it running and move to the next step.
   5. The top-ranked partition is the most likely number of species. Note the score and the partition.
 
+  ### 2.6 Comparison Exercise
+  Fill in the table below with your results:
+| Method | N species delimited | Corresponds to morpho-species? |
+| --- | --- | --- |
+| ABGD (from paper) | 2 | Yes |
+| GMYC (from paper) | 2 | Yes |
+| mPTP (your run)   | ? | ? |
+| ASAP (your run)   | ? | ? |
 
-## 3. BAMM analysis
+Do all methods agree? If there is disagreement, which specimens are problematic?
+
+If you like testing more possible options, you can try [GMYC online](https://species.h-its.org/gmyc/). It is the same server as bPTP, so you can still taste another method.
+
+  ### 2.7 Discussion questions
+  - Why might mPTP (multi-rate) and GMYC (ultrametric, single-rate) give different answers?
+  - Could intraspecific population structure within *T. challengeriana* (Weddell Sea vs. Ross Sea) fool a delimitation method into over-splitting?
+  - What additional data (more loci, more specimens, morphology) would increase confidence?
+
+
+## 3. Haplotype Networks: Building and Visualising with PopArt
+
+## 4. BAMM analysis
 
 There are many ways to dected speciation events or diversification in evolutionary rates, for this practical we are going to start with a BAMM analysis.
 BAMM (Bayesian Analysis of Macroevolutionary Mixtures) is a method used to study how diversification rates have changed across a phylogenetic tree through evolutionary time.
