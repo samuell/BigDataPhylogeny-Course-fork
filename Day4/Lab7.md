@@ -108,7 +108,7 @@ By the end of this session, you should be able to:
 
 
   ### 2.5 Running ASAP
-  1. Go to the [ASAP website](https://bioinfo.mnhn.fr/abi/public/asap/)
+  1. Go to the [ASAP website](https://bioinfo.mnhn.fr/abi/public/asap/). It seems that the website is down, but you can visit this [site](https://itaxotools.org/download.html#hyperlinkDelimit) and download the program. It is pretty simple to install.
   2. Upload the COI alignment in FASTA format.
   3. Choose distance model: Kimura 2-parameter (K80).
   4. Click Analyse. ASAP presents ranked partitions with an ASAP-score.
