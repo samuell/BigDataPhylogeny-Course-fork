@@ -6,7 +6,7 @@
 Synteny matters because:
 - It is independent evidence for orthology (same gene by descent), on top of sequence similarity.
 - Long conserved blocks tell us which ancestral chromosome arrangements have survived; broken synteny tells us where genome reshuffling happened.
-- In molluscs specifically, bivalves, gastropods, and cephalopods diverged hundreds of millions of years ago and show very different amounts of genome reshuffling, making this a great system to *see* synteny erosion happen.
+- In molluscs specifically, bivalves, gastropods, and cephalopods diverged hundreds of millions of years ago, and show very different amounts of genome reshuffling, making this a great system to *see* synteny erosion happen.
 
 ### Dataset and tutorial
 Here we want to visualize the synteny of 3 mollusc species.
@@ -137,9 +137,10 @@ MCScanX mollusc
 ### Visualization
 
 **SynVisio** 
-Now follow this [link](https://synvisio.github.io/#/) and upload just upload your `mollusc.gff` and `mollusc.collinearity` files there to generate an interactive plot.
+Now follow this [link](https://synvisio.github.io/#/) and upload your `mollusc.gff` and `mollusc.collinearity` files, to generate an interactive plot.
 
  Go to the filter panel on the right side of the page. In the `source chromosome` and `target chromosome` click on select all, and then click go. These are the 3 species with an all vs all plot. 
+
 You can try and compare Cassostrea gigas (cgi) vs Snail (pca) or Cassostrea vs Octopus (opi).
 
 Play around Synvisio, you can zoom in specific chromosomes and check which blocks have moved.
