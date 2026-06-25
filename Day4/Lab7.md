@@ -145,7 +145,38 @@ If you like testing more possible options, you can try [GMYC online](https://spe
   - What additional data (more loci, more specimens, morphology) would increase confidence?
 
 
-## 3. Haplotype Networks: Building and Visualising with PopArt
+## 3. Haplotype Networks
+A rooted phylogenetic tree forces every bifurcation to be strictly hierarchical and every ancestral haplotype to be inferred (and invisible). A haplotype network:
+•	Retains observed ancestral haplotypes as nodes.
+•	Shows multiple connections to represent ambiguity or recombination.
+•	Visualises within-species (population-level) relationships where ILS is common and a tree-like structure may not exist.
+•	Maps geography, colour morph, or other metadata directly onto nodes.
+
+A tree is appropriate when lineages have fully sorted (diverged long ago, no gene flow). A network is appropriate within or near the species boundary, where haplotypes may be shared across populations, ancestral haplotypes may still be sampled, and incomplete lineage sorting prevents a fully resolved tree.
+
+  ### 3.1 Building a TCS/Median-Joining Network in PopArt
+  **PopArt** (Population Analysis with Reticulate Trees) is pre-installed on your computer. If not, download it from [PopArt](https://popart.maths.otago.ac.nz/download/) if needed.
+
+  #### Preparing the input file
+  PopArt reads **NEXUS** format with a TRAITS block for metadata. Convert your COI FASTA to NEXUS in R:
+
+  ```r
+  library(ape)
+  seqs <- read.FASTA('data/tritonia_coi_aligned.fasta')
+  write.nexus.data(seqs, file='results/COI_tritonia.nex', format='DNA')
+  ```
+  Check that the format is correct. It should look like this:
+  <img width="607" height="178" alt="image" src="https://github.com/user-attachments/assets/b9c07f5b-a636-4fb0-af2f-dc4dd1a1c39e" />
+
+  Then manually add a TRAITS block to colour specimens by species/location (see PopArt documentation for syntax).
+
+  #### Running the network
+  1.	Open PopArt > File > Open > select your .nex file.
+  2.	Network > TCS Network  (or try Median-Joining Network for comparison).
+  3.	Use Graph > Colour nodes by trait to map location (Weddell Sea / Bouvet Island) and colour morph (orange / white).
+  4.	Export figure as PDF or SVG.
+
+
 
 ## 4. BAMM analysis
 
