@@ -144,6 +144,7 @@ If you like testing more possible options, you can try [GMYC online](https://spe
   - Could intraspecific population structure within *T. challengeriana* (Weddell Sea vs. Ross Sea) fool a delimitation method into over-splitting?
   - What additional data (more loci, more specimens, morphology) would increase confidence?
 
+---
 
 ## 3. Haplotype Networks
 A rooted phylogenetic tree forces every bifurcation to be strictly hierarchical and every ancestral haplotype to be inferred (and invisible). A haplotype network:
@@ -184,9 +185,100 @@ A tree is appropriate when lineages have fully sorted (diverged long ago, no gen
   4.	Use Graph > Colour nodes by trait to map location (Weddell Sea / Bouvet Island) and colour morph (orange / white).
   5.	Export figure as PDF or SVG.
 
+  #### Interpreting the network
+  - Are the two species (*T. challengeriana* and *T. dantarti*) separated by many mutational steps or few?
+  - Are orange and white colour morphs interleaved within each species' clade, or do they form separate sub-clusters?
+  -	Are there shared haplotypes between the two species? If yes, what could explain this?
+  -	Are Weddell Sea and Ross Sea specimens of *T. challengeriana* intermixed, or is there geographic structure?
 
+  ### 3.2 Networks in SplitsTree
+  #### Phylogenetic Networks and Reticulation
+  `SplitsTree` implements neighbour-net and splits-graph algorithms that display incompatible phylogenetic signal as parallelograms (boxes) rather than forcing a single bifurcating topology. Large boxes indicate conflicting signal from:
+•	Recombination (reshuffling of genetic material)
+•	Hybridisation / introgression (gene flow between lineages)
+•	Incomplete lineage sorting (ILS) — ancestral polymorphism retained across speciation events
+•	Saturation / homoplasy in the sequences
 
-## 4. BAMM analysis
+  If you didn't do it yet, download [SplitsTree6](https://software-ab.cs.uni-tuebingen.de/download/splitstree6/welcome.html) and install.
+
+1.	Open SplitsTree > File > Open > select your aligned COI FASTA or NEXUS.
+2.	The default view uses Neighbour-Net. Examine the network.
+3.	Go to Analysis > Bootstrap (100 replicates) to assess support for splits.
+4.	Try the same with the 16S and H3 markers separately. Do they show the same topology?
+
+  ### 3.3 Trees vs network comparison
+  | Feature	| Tree	| Network (SplitsTree) |
+  | --- | --- | --- |
+  | Representation	| Strictly bifurcating	| Reticulate; boxes for conflicting signal |
+  | Ancestral nodes	| Inferred, not observed	| Can be observed haplotypes |
+  | Conflicting signal	| Hidden / collapsed	| Explicitly shown as parallelograms |
+  | Best used for	| Well-diverged lineages, tree-like evolution	| Recent divergence, ILS, introgression, recombination |
+  | Within-species use	| Poor — forces bifurcation	| Excellent — shows population structure |
+
+  
+- Does the SplitsTree network for COI show large boxes (conflicting signal) or is it mostly tree-like?
+- Compare the COI network to the 16S network. Are the splits consistent? Discordance between markers can indicate ILS or past gene flow.
+- If you see boxes between T. challengeriana and T. dantarti, does this mean they hybridise? What alternative explanations exist?
+- In which scenarios would you publish a network rather than (or alongside) a tree?
+
+---
+
+## 4. Hybridisation, Introgression & Recombination (Optional)
+### 4.1 Biological Background
+In the Science 2025 mollusc dataset, phylogenomic analyses revealed extensive gene-tree discordance across the 8 major mollusc classes. Much of this discordance is attributed to deep coalescence (ILS) rather than hybridisation, but the basal topology, particularly the placement of Monoplacophora, remains contentious. 
+
+The mollusc-like topology you will use as your reference species tree is:
+```bash
+((((((((Scintilla_philippinensis,Verpa_penis)N8,Solemya_velum)N7,(Pictodentalium_vernedei,Siphonodentalium_dalli)N9)N6,((Aplysia_californica,Concholepas_concholepas)N11,((Tectura_virginea,Lottia_scabra)N13,Haliotis_cracherodii)N12)N10)N5,((Sepiola_atlantica,Octopus_vulgaris)N15,Nautilus_pompilius)N14)N4,Veleropilina_oligotropha)N3,(((Acanthochitona_discrepans,Callochiton_septemvalvis)N18,Deshayesiella_sirenkoi)N17,(Epimenia_babai,Neomenia_megatrapezata)N19)N16)N2,Lingula_anatina)N1;
+```
+
+Notice the major groups: Bivalvia (*Scintilla, Solemya, Verpa*), Scaphopoda (*Pictodentalium, Siphonodentalium*), Gastropoda (*Aplysia, Concholepas, Tectura, Lottia, Haliotis*), Cephalopoda (*Sepiola, Octopus, Nautilus*), Monoplacophora (*Veleropilina*), Polyplacophora (*Acanthochitona, Callochiton, Deshayesiella*), Aplacophora (*Epimenia, Neomenia*), and the outgroup *Lingula* (Brachiopoda).
+
+### 4.3 Detecting Gene-Tree Discordance
+We will use a multi-gene approach. Your instructor has provided 50 simulated gene alignments in the directory gene_alignments/.
+
+Step 1 — Build individual gene trees
+* Build ML trees for each gene
+```bash
+for f in gene_alignments/*.fasta; do
+  raxml-ng --msa $f --model GTR+G --prefix trees/$(basename $f .fasta) \
+           --seed 42 --threads 2 --redo
+done
+```
+* Collect best trees into one file
+```bash
+cat trees/*.raxml.bestTree > all_gene_trees.nwk
+```
+Step 2 — Visualise discordance with DensiTree
+* Open all_gene_trees.nwk in DensiTree # (included in BEAST package, or standalone download)
+* Blue = majority; transparency shows conflicting topologies
+
+#### Questions
+1. Which internal nodes show the most gene-tree discordance (most transparent branches in DensiTree)?
+2. Is discordance concentrated at deep nodes (as expected from ILS) or at shallow nodes (suggesting recent gene flow)?
+3. Identify any gene trees that show an unexpected grouping (e.g. a Gastropoda taxon sister to Cephalopoda). Could this be an artefact, ILS, or genuine introgression?
+
+### 4.4 Detecting Introgression: D-statistics (ABBA-BABA test)
+The D-statistic detects asymmetric allele sharing between a donor and recipient lineage. It requires an outgroup, a potential donor (P3), and two taxa that could have hybridised (P1, P2).
+
+D = (ABBA counts − BABA counts) / (ABBA + BABA) — significant D ≠ 0 indicates introgression.
+
+#### In R, using the 'admixr' package:
+```r
+library(admixr)
+# Prepare EIGENSTRAT format from your concatenated alignment (see admixr docs)
+# Define populations: outgroup = Lingula, P3 = Cephalopoda,
+#   P1 = Gastropoda_A, P2 = Gastropoda_B
+result <- D(data, W='Lingula', X='Gastropoda_A', Y='Gastropoda_B', Z='Cephalopoda')
+print(result)
+```
+
+Note
+The D-statistic is a population-genomics tool and requires SNP-level data across many loci. For single-locus data, you cannot run a formal ABBA-BABA test, but you can look for haplotype sharing in SplitsTree as a proxy.
+
+---
+
+## 5. BAMM analysis
 
 There are many ways to dected speciation events or diversification in evolutionary rates, for this practical we are going to start with a BAMM analysis.
 BAMM (Bayesian Analysis of Macroevolutionary Mixtures) is a method used to study how diversification rates have changed across a phylogenetic tree through evolutionary time.
