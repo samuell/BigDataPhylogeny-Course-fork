@@ -378,7 +378,7 @@ Now we are ready to run astral:
 
 ```sh
 
-astral-pro3 -i Mollusc_astral_paralogs.tree -o Mollusc_coalescent.tree -a Headers_fullsp.txt
+astral-pro3 -i Mollusc_astral_input.tree -o Mollusc_coalescent.tree -a Headers_fullsp.txt
 ```
 
 `-i` = input file
