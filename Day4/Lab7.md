@@ -115,6 +115,17 @@ By the end of this session, you should be able to:
   5. Click `Analyse` (in the website) or `RUN` (in the app). ASAP presents ranked partitions with an ASAP-score. # If it takes too long, you can leave it running and move to the next step.
   6. The top-ranked partition is the most likely number of species. Note the score and the partition.
 
+  ### Looking at the output
+  * Histogram
+<img width="737" height="543" alt="image" src="https://github.com/user-attachments/assets/883b49fe-3c55-4cb1-977a-b2a6383691a5" />
+
+  The graph shows the distribution of genetic distances between all pairs of analysed sequences. Two groups of bars separated by a *gap* (the **barcoding gap**) are clearly visible:
+  · The peak on the left (Low distances, 0.00–0.03): Represents intraspecific variation (differences between individuals of the same species).
+  · The peak on the right (High distances, >0.12): Represents interspecific variation (differences between different species).
+  
+  The empty space corresponding to the area between 0.03 and 0.11 where there are almost no bars is what is called the `barcode gap`. This clear separation is the statistical evidence that allows the authors to affirm that the specimens belong to different species and are not simply variations of the same population.
+
+
   ### 2.6 Comparison Exercise
   Fill in the table below with your results:
 | Method | N species delimited | Corresponds to morpho-species? |
