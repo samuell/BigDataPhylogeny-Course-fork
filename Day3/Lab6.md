@@ -239,6 +239,25 @@ Three output files matter:
 ### 3.4 Reading the output
 
 Open `results/ASR_RS9.raxml.ancestralStates` in a text editor. Each line has a node name followed by a 130-character amino-acid sequence: the single most likely ancestral sequence for that node.
+Watch out because raxml-ng changed the node labels, and now the root node and all the others are renamed. If you want to find out what is the new name in order to make comparisons, you can run this short script in R:
+
+```r
+library(ape)
+
+tree <- read.tree("ASR_RS9.raxml.ancestralTree")
+plot(tree)
+nodelabels()
+tiplabels()
+
+#Find root node label
+root_node <- getMRCA(tree, tree$tip.label)
+root_node
+
+# Find cephalopod node
+tree$tip.label  # first make sure that you know how are the tips written
+ceph_node <- getMRCA(tree, c("Octopus_vulgaris", "Sepiola_atlantica", "Nautilus_pompilius"))  
+ceph_node
+```
 
 **Questions:**
 
