@@ -107,6 +107,13 @@ By the end of this session, you should be able to:
   -	Are any specimens placed in unexpected species entities? Check voucher numbers.
 
 
+  ### 2.5 Running ASAP
+  1. Go to the [ASAP website](https://bioinfo.mnhn.fr/abi/public/asap/)
+  2. Upload the COI alignment in FASTA format.
+  3. Choose distance model: Kimura 2-parameter (K80).
+  4. Click Analyse. ASAP presents ranked partitions with an ASAP-score.
+  5. The top-ranked partition is the most likely number of species. Note the score and the partition.
+
 
 ## 3. BAMM analysis
 
