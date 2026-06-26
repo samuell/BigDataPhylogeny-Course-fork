@@ -234,6 +234,109 @@ For *Tritonia*, you could test:
   - Leaché & Fujita (2010) *Proceedings Royal Society B* — classic BFD* application
   - Hausdorf (2025) *Molecular Ecology* — empirical comparison showing over-splitting in discovery methods
 
+  ### 2.10 (Optional - informative) Species Delimitation at Scale: From Single Loci to UCEs
+
+  #### Why single-locus methods don't scale
+
+  Everything in Sections 2.2–2.5 (mPTP, ASAP, GMYC, ABGD) was designed for **one locus**. They look for a `barcode gap` or a `coalescent-to-speciation rate transition` in a single gene tree. When you have hundreds or thousands of loci — as in a UCE, RADseq, or exon-capture dataset you face a different situation:
+
+  - Running mPTP on each locus separately gives you hundreds of conflicting answers.
+  - Concatenating all loci and running mPTP on the concatenated tree ignores gene-tree discordance and treats the dataset as if it were a single marker.
+  - Neither is appropriate.
+
+  What you actually want is a method that **models gene-tree variation across loci** under the multispecies coalescent, the same framework used by ASTRAL for species tree estimation, which you will use further in this tutorial.
+
+  #### SODA: species delimitation from gene trees
+
+  **SODA** (Species delimitatiOn using Discordance Analysis; [Rabiee & Mirarab 2020, *Bioinformatics* 36:5623](https://academic.oup.com/bioinformatics/article/36/24/5623/6130817)) takes a set of gene trees as input and asks: at which nodes in the species tree does the branching pattern switch from within-species coalescence to between-species divergence? It does this by testing whether internal branches in the species tree have zero length under the MSC (a zero-length branch means the lineages diverged instantaneously and are not independently evolving).
+
+  Input:  many gene trees (one per UCE locus)
+
+  ↓
+
+  ASTRAL-style quartet analysis
+
+  ↓
+
+  Output: which nodes are "real" species boundaries vs. population structure
+
+  #### The UCE pipeline to SODA
+
+  Assuming you have already processed UCE data through phyluce (assembly → locus extraction → alignment), the steps are:
+
+  **Step 1 — Build a gene tree per UCE locus**
+
+  ```bash
+  # After phyluce alignment step, you have one FASTA per locus in:
+  # mafft-nexus-edge-trimmed/
+
+  # Build a gene tree for each locus with IQ-TREE
+  mkdir -p gene_trees/
+
+  for f in mafft-nexus-edge-trimmed/*.nexus; do
+      base=$(basename $f .nexus)
+      iqtree -s $f -m GTR+G \
+              --prefix gene_trees/$base \
+              -T 2 --redo -q   # -q = quiet mode
+  done
+
+  # Collect all best trees into one file
+  cat gene_trees/*.treefile > all_UCE_gene_trees.nwk
+  echo "Total gene trees: $(wc -l < all_UCE_gene_trees.nwk)"
+  ```
+
+  **Step 2 — (Recommended) Phase UCE alleles first**
+
+  UCE loci are diploid (each individual has two alleles). Phasing separates them before tree-building, which significantly improves delimitation accuracy ([Andermann et al. 2019, *Systematic Biology*](chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.faircloth-lab.org/assets/pdf/andermann-et-al-2019-systematic-biology.pdf)). `phyluce` implements this in its [Tutorial II](https://phyluce.readthedocs.io/en/latest/tutorials/) pipeline:
+
+  ```bash
+  # After edge-trimming, explode alignments by taxon
+  phyluce_align_explode_alignments \
+      --alignments mafft-nexus-edge-trimmed \
+      --input-format nexus \
+      --output mafft-nexus-edge-trimmed-exploded \
+      --by-taxon
+
+  # Then align raw reads back to individual-specific contigs
+  # and call + phase SNPs (see phyluce Tutorial II for full steps)
+  # Output: phased alignments where each individual has two sequences
+  #         (taxon_0 and taxon_1 for each allele)
+  ```
+
+  If phasing is not done, SODA still works, but may over-split because heterozygosity within individuals is mistaken for population structure.
+
+  **Step 3 — Run SODA**
+
+  ```bash
+  # Install SODA
+  [SODA](https://github.com/maryamrabiee/SODA)
+  
+  # Run SODA with all gene trees
+  # No guide tree required (unsupervised / discovery mode)
+  soda -t all_UCE_gene_trees.nwk \
+       -o soda_output/ \
+       --threshold 0.05     # p-value threshold for branch length test
+  ```
+
+  SODA outputs a table listing each node and whether it is supported as a species boundary (p < threshold). The final species partition is written as a mapping of individuals to candidate species.
+
+  **Step 4 — Compare to single-locus results**
+
+  | Method | Data | N loci | Assumptions |
+  |---|---|---|---|
+  | ASAP | COI (1 locus) | 1 | Barcode gap exists |
+  | mPTP | COI ML tree | 1 | Per-species coalescent rate |
+  | SODA | UCE gene trees | 100s–1000s | MSC; no guide tree needed |
+  | BPP | UCE alignments | 10s–100s | MSC; guide tree required |
+
+ 
+  SODA and other MSC methods have a well-documented tendency to over-split. [Hausdorf (2025, *Molecular Ecology*)](https://pubmed.ncbi.nlm.nih.gov/40026292/) showed that SODA delimited 233% of the expected number of species across four studied species complexes, essentially treating every genetically structured population as a distinct species. This is not a bug, it is a consequence of the MSC assumption that any detectable divergence = independent evolution. The lesson: **use SODA output as a primary species hypothesis, then validate with BPP or geographic/morphological data**.
+
+  #### A real example: UCE delimitation in velvet worms
+
+  [Lord et al. (2026, *Invertebrate Systematics*)](https://connectsci.au/is/article-abstract/40/1/IS25038/266190/Genomic-species-delimitation-reveals-sympatry-in?redirectedFrom=fulltext) used a UCE probe set designed for Onychophora with exactly this pipeline: `phyluce → IQ-TREE gene trees → SODA`, and discovered that two morphologically similar species of the egg-laying velvet worm *Ooperipatellus* were in fact sympatric (living in the same place), something impossible to detect from morphology alone. This is a textbook case of how big-data delimitation reveals cryptic diversity invisible to traditional taxonomy.
+
+  
 ---
 
 ## 3. Haplotype Networks
