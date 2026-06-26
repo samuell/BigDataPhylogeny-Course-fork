@@ -462,34 +462,23 @@ cat trees/*.treefile > all_gene_trees.nwk
 **Step 2 — Visualise discordance with DensiTree**
 * Open all_gene_trees.nwk in `DensiTree` # (included in BEAST package, or standalone download from [here](https://www.cs.auckland.ac.nz/~remco/DensiTree/download.html))
   If you are using the last DensiTree version, to run it, from the command line use `java -jar DensiTree.jar` from the directory where you saved the DensiTree jar file.
-* Blue = majority; transparency shows conflicting topologies
 
-#### Questions
-1. Which internal nodes show the most gene-tree discordance (most transparent branches in DensiTree)?
-2. Is discordance concentrated at deep nodes (as expected from ILS) or at shallow nodes (suggesting recent gene flow)?
-3. Identify any gene trees that show an unexpected grouping (e.g. a Gastropoda taxon sister to Cephalopoda). Could this be an artefact, ILS, or genuine introgression?
+* Don't be scared, this is your result:
+  <img width="1611" height="699" alt="image" src="https://github.com/user-attachments/assets/498aa2d1-3ac3-4896-9f96-8fb4ef64c33f" />
 
-### 4.4 Detecting Introgression: D-statistics (ABBA-BABA test)
-The `D-statistic` detects *asymmetric allele sharing* between a donor and recipient lineage. It requires an outgroup, a potential donor (P3), and two taxa that could have hybridised (P1, P2).
+  The image shows a lot of conflict. This is normal because you have put together a lot of gene trees. It is especially visible in the middle part. This indicates that:
+- many nodes are not shared between genes
+- there is a lot of gene-tree discordance
 
-```bash
-D = (ABBA counts − BABA counts) / (ABBA + BABA) — significant D ≠ 0 indicates introgression.
-```
+  The red lines represent the consensus tree (or the "target tree"). It is the tree that DensiTree takes as a reference. The green ones are the other trees. When the green ones coincide with the red ones:
 
-#### In R, using the 'admixr' package:
-```r
-install.packages("admixr")
+  → there is support.
 
-library(admixr)
-# Prepare EIGENSTRAT format from your concatenated alignment (see admixr docs)
-# Define populations: outgroup = Lingula, P3 = Cephalopoda,
-#   P1 = Gastropoda_A, P2 = Gastropoda_B
-result <- D(data, W='Lingula', X='Gastropoda_A', Y='Gastropoda_B', Z='Cephalopoda')
-print(result)
-```
+  When the green ones diverge a lot:
 
-Note
-The D-statistic is a population-genomics tool and requires SNP-level data across many loci. For single-locus data, you cannot run a formal ABBA-BABA test, but you can look for haplotype sharing in SplitsTree as a proxy.
+  → there is conflict.
+
+  You can play around with the display options a bit if you want.
 
 ---
 
