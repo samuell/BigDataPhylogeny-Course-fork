@@ -31,9 +31,13 @@ By the end of this session, you should be able to:
 
   ### 1.2 Dataset
   You have downloaded the data from Rossi et al. (2021). The dataset comprises 41 *Tritonia* ingroup specimens + 2–3 outgroup taxa, sequenced for three markers:
+  
 •	COI — mitochondrial, protein-coding, ~601 bp (3rd codon position included)
+
 •	16S rRNA — mitochondrial, non-coding, ~486 bp
+
 •	H3 — nuclear, protein-coding, ~328 bp (3rd codon position included)
+
 
   ### 1.3 Phylogeographic interpretation
   Open the published ML/BI tree (Fig. 2 of Rossi et al. 2021, or load your own RAxML run output). Answer the following:
