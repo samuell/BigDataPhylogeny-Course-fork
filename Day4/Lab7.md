@@ -238,7 +238,7 @@ The mollusc-like topology you will use as your reference species tree is:
 Notice the major groups: Bivalvia (*Scintilla, Solemya, Verpa*), Scaphopoda (*Pictodentalium, Siphonodentalium*), Gastropoda (*Aplysia, Concholepas, Tectura, Lottia, Haliotis*), Cephalopoda (*Sepiola, Octopus, Nautilus*), Monoplacophora (*Veleropilina*), Polyplacophora (*Acanthochitona, Callochiton, Deshayesiella*), Aplacophora (*Epimenia, Neomenia*), and the outgroup *Lingula* (Brachiopoda).
 
 ### 4.3 Detecting Gene-Tree Discordance
-We will use a multi-gene approach. Your instructor has provided 50 simulated gene alignments in the directory gene_alignments/.
+We will use a multi-gene approach. You can use the single-copy gene alignments from previous sessions.
 
 Step 1 — Build individual gene trees
 * Build ML trees for each gene
