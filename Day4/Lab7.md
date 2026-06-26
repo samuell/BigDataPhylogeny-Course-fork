@@ -712,3 +712,83 @@ You should have generated many different plot, with the tree on credible shifts.
 - Which lineage started to diversify the most?
 - Looking at `plotRateThroughTime(edata, rate = "speciation")` plot, at what time the shift happened?
 
+
+## 6. Final excercise: ASTRAL-PRO
+
+This is a final excersice to infer a species tree when you have gene trees with a lot of paralogs. In this part of the tutorial we are going to use ASTRAL-PRO3 in the package ASTER. ASTRAL is a coalescent methods that aims at recovering the species tree from the gene trees, without any information from the alignments. 
+
+You will need:
+- gene trees in newick format (e.g. the `.treefile` output from IQTREE)
+- list of the trees compiled as input file
+- file where you assign each tips of the branch to the species.
+
+First let's log into the terminal:
+
+```sh
+cp -r /home/ubuntu/Share/AstralPro/ .
+
+conda activate BigDataPhylo
+
+#enter into the directory
+
+cd AstralPro/
+```
+
+If you type `ls *treefile` you will see all the gene trees we have generated for you. 
+How many trees do you have?
+
+Astral needs a list of trees as input, meaning it wants a file with each tree in newick format. 
+
+To generate that file, from the same directory type: 
+
+```sh
+cat *treefile > Mollusc_astral_input.tree
+```
+If you type `less Mollusc_astral_input.tree`, you will see all the trees pasted inside (a tree in newick always end with the `;` symbol)
+It should look somethinkg like this;
+
+![alt text](<Screenshot 2026-06-25 at 17.28.15.png>)
+
+Then you need to provide a map where each tip or sequence name is assigned to a species. We have provided this list for you, it's called `Headers_fullsp.txt`, so you can match it with your own data in the future.
+
+This is how it looks like:
+```sh
+Acal_A0ABP2DGE7	A_californica
+Acal_A0ABM9XCP5	A_californica
+Acal_A0ABP2DMQ5	A_californica
+Acal_A0ABM9XGQ6	A_californica
+Adis_A0ABN6KJ52	A_discrepans
+Adis_A0ABN6KJK2	A_discrepans
+Adis_A0ABN6KM91	A_discrepans
+Adis_A0ABM7UWH3	A_discrepans
+Adis_A0ABM7UQ55	A_discrepans
+Adis_A0ABM7UV24	A_discrepans
+Adis_A0ABN6KRB1	A_discrepans
+Ccon_A0AB33AL84	C_concholepas
+Ccon_A0AB33ALA2	C_concholepas
+Ccon_A0AB33AMZ2	C_concholepas
+Ccon_A0AB33ALY9	C_concholepas
+Ccon_A0AB33APG6	C_concholepas
+Ccon_A0AB33AK90	C_concholepas
+
+```
+The second item in the list (e.g A_californica) is the species name, you can use any name you want here, ASTRAL will use it on the output tree. 
+
+Now we are ready to run astral:
+
+```sh
+
+astral-pro3 -i Mollusc_astral_input.tree -o Mollusc_coalescent.tree -a Headers_fullsp.txt
+```
+
+`-i` = input file
+`-o` = output file
+`-a` = name of the map file
+
+
+It will take seconds. Once it's done, take the output and open it in FigTree. 
+
+- Do you notice any difference in the topology compared to the maximum likelihood trees you got during Lab3?
+
+Well Done!! Now you know how to run a tree using coalescent methods! 
+
