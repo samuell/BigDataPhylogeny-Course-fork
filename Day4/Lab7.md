@@ -271,6 +271,7 @@ For *Tritonia*, you could test:
 
   **SODA** (Species delimitatiOn using Discordance Analysis; [Rabiee & Mirarab 2020, *Bioinformatics* 36:5623](https://academic.oup.com/bioinformatics/article/36/24/5623/6130817)) takes a set of gene trees as input and asks: at which nodes in the species tree does the branching pattern switch from within-species coalescence to between-species divergence? It does this by testing whether internal branches in the species tree have zero length under the MSC (a zero-length branch means the lineages diverged instantaneously and are not independently evolving).
 
+  ```bash
   Input:  many gene trees (one per UCE locus)
 
               ↓
@@ -280,6 +281,7 @@ For *Tritonia*, you could test:
               ↓
 
   Output: which nodes are "real" species boundaries vs. population structure
+  ```
 
   #### The UCE pipeline to SODA
 
