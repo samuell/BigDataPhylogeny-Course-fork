@@ -147,6 +147,89 @@ If you like testing more possible options, you can try [GMYC online](https://spe
   ### 2.8 Further analyses
   In the real life, if you have information for more molecular markers available, you should use it! We provided sequences for two more molecular markers (16S and h3). You can try using these markers for the delimitation analyses and then compare if the results are consistent with the ones you got for coi.
 
+  ### 2.9 (Optional) Species Delimitation: Discovery vs. Validation
+
+  #### Two philosophically different operations
+
+  Everything you have done so far in this section (ABGD, GMYC, mPTP, ASAP) belongs to the category of **species discovery** (also called *species finding* or *unsupervised delimitation*). These methods take your sequences and ask: *"How many independently evolving units are here, with no prior hypotheses?"* They are fast, useful for poorly-known groups, and essential when you have no taxonomy to start from.
+
+  But there is a second operation: **species validation**. Here you start with one or more explicit species hypotheses (e.g., "I think there are 2 species" vs. "I think there is 1 species") and ask which hypothesis the data support better, using a formal statistical test. Validation is more rigorous but requires prior biological knowledge.
+
+| | Discovery | Validation |
+|---|---|---|
+| Prior hypothesis needed? | No | Yes |
+| Output | Number of candidate species | Statistical support for a specific model |
+| Examples | ABGD, GMYC, mPTP, ASAP, SODA | BPP, BFD\*, PTP validation mode |
+| Main risk | Over-splitting (every structured population = species) | Depends on quality of prior hypotheses |
+| Best for | Poorly known taxa, barcoding | Hypothesis testing in well-studied groups |
+
+  The over-splitting problem you saw in the discussion questions where mPTP or ASAP may fragment *T. challengeriana* into Weddell Sea and Ross Sea entities is a discovery-method artefact. A validation step would ask: *"Is the 2-species model significantly better than the 1-species model?"*
+
+  #### BPP: a coalescent-based validation framework
+
+  **BPP** (Bayesian Phylogenetics and Phylogeography, [Rannala & Yang 2013](https://academic.oup.com/genetics/article/194/1/245/6065416), [2017](https://academic.oup.com/sysbio/article/66/5/823/2805857)) models the multispecies coalescent explicitly. You provide:
+1. A guide tree (the species topology you want to test)
+2. Sequence alignments for multiple loci
+3. Prior distributions on population sizes (θ) and divergence times (τ)
+
+  `BPP` then estimates the posterior probability that each node in the guide tree represents a real speciation event. A node with posterior probability > 0.95 is considered a supported species boundary.
+
+For *Tritonia*, you could test:
+- **H1**: 2 species (*T. challengeriana* + *T. dantarti*) guided by the COI tree
+- **H2**: 3 species splitting *T. challengeriana* into Weddell and Ross Sea lineages
+- **H3**: 1 species everything is one population
+
+  #### Running BPP (conceptual walkthrough)
+
+  BPP requires multi-locus data. Since you have three markers (COI, 16S, H3), this is feasible.
+
+  > Install [BPP](https://github.com/bpp/bpp) . We didn't install `bpp` in the server, and it can take a while, so we recommend doing it when you have the time. Now, just have a look at the commands.
+
+
+  > You need:
+  * 1. A control file (Imap file mapping individuals to species)
+  * 2. Sequence files for each locus
+  * 3. The guide tree in Newick format
+
+  A minimal control file looks like this:
+  ```bash
+  seed = -1
+
+  seqfile = tritonia_3loci.txt     * sequence data (concatenated loci in BPP format)
+  Imapfile = tritonia_imap.txt     * maps each specimen to a species
+  outfile = bpp_out.txt
+  mcmcfile = bpp_mcmc.txt
+
+  speciesdelimitation = 1 1 2     * rjMCMC species delimitation
+  speciestree = 0                  * fixed guide tree
+  species&tree = 2 T_challengeriana T_dantarti
+  30 12             * number of sequences per species
+  (T_challengeriana, T_dantarti);
+
+  thetaprior = 3 0.004 e          * inverse-gamma prior on theta
+  tauprior = 3 0.002              * inverse-gamma prior on tau
+  ```
+
+  Then you can run bpp like this:
+  
+  ```bash
+   bpp --cfile bpp_control.txt
+  ```
+
+  The output gives you the posterior probability for each delimitation model. If P(2 species) > 0.95, the 2-species hypothesis is validated.
+
+  Here there is a [tutorial](https://inria.hal.science/PGE/hal-02536475) where you can go deep in this isue, if interested.
+
+  #### Validation matters
+  The discovery methods already told you there are 2 species. But suppose you found a third cluster: some Weddell Sea specimens that appear slightly differentiated in one marker. Should you name them a third species? A discovery method might say yes. A BPP validation run would ask whether that third lineage has a significantly distinct coalescent history across *all three markers*. If not, if the signal comes from one locus only, the 2-species model will have higher posterior probability and you would not split.
+
+  This is the key message: **discovery generates hypotheses; validation tests them**. In a robust taxonomic study, you need both.
+
+  #### Further reading
+  - Rannala & Yang (2013) *Systematic Biology* 62:523 — BPP method paper
+  - Leaché & Fujita (2010) *Proceedings Royal Society B* — classic BFD* application
+  - Hausdorf (2025) *Molecular Ecology* — empirical comparison showing over-splitting in discovery methods
+
 ---
 
 ## 3. Haplotype Networks
@@ -240,20 +323,38 @@ Notice the major groups: Bivalvia (*Scintilla, Solemya, Verpa*), Scaphopoda (*Pi
 ### 4.3 Detecting Gene-Tree Discordance
 We will use a multi-gene approach. You can use the single-copy gene alignments from previous sessions.
 
-Step 1 — Build individual gene trees
-* Build ML trees for each gene
 ```bash
-for f in gene_alignments/*.fasta; do
-  raxml-ng --msa $f --model GTR+G --prefix trees/$(basename $f .fasta) \
-           --seed 42 --threads 2 --redo
-done
+mkdir -p lab7/data
+cd lab7/data/
+cp -r /home/ubuntu/Share/Single_Copy_Orthologue_Sequences .  #if you already aligned and inferred the trees, copy/paste them here as well
 ```
+
+**Step 1 — Build individual gene trees (if already done, go to the next step)**
+* Build ML trees for each gene if you don't have them yet
+```bash
+mkdir -p lab7/data/alignments
+mkdir -p lab7/data/trees
+
+cd lab7/data/
+for f in *.fasta; do
+  mafft --auto $f > alignments/"${f%.fasta}_aln.fasta"
+done
+
+for f in aligned/*.fasta; do
+  iqtree -s $f -m TESTMERGE -T AUTO
+done
+
+# then move all the tree files to the `lab7/data/trees` folder
+```
+
 * Collect best trees into one file
 ```bash
-cat trees/*.raxml.bestTree > all_gene_trees.nwk
+cat trees/*.treefile > all_gene_trees.nwk
 ```
-Step 2 — Visualise discordance with DensiTree
-* Open all_gene_trees.nwk in DensiTree # (included in BEAST package, or standalone download)
+
+**Step 2 — Visualise discordance with DensiTree**
+* Open all_gene_trees.nwk in `DensiTree` # (included in BEAST package, or standalone download from [here](https://www.cs.auckland.ac.nz/~remco/DensiTree/download.html))
+  If you are using the last DensiTree version, to run it, from the command line use `java -jar DensiTree.jar` from the directory where you saved the DensiTree jar file.
 * Blue = majority; transparency shows conflicting topologies
 
 #### Questions
@@ -262,12 +363,16 @@ Step 2 — Visualise discordance with DensiTree
 3. Identify any gene trees that show an unexpected grouping (e.g. a Gastropoda taxon sister to Cephalopoda). Could this be an artefact, ILS, or genuine introgression?
 
 ### 4.4 Detecting Introgression: D-statistics (ABBA-BABA test)
-The D-statistic detects asymmetric allele sharing between a donor and recipient lineage. It requires an outgroup, a potential donor (P3), and two taxa that could have hybridised (P1, P2).
+The `D-statistic` detects *asymmetric allele sharing* between a donor and recipient lineage. It requires an outgroup, a potential donor (P3), and two taxa that could have hybridised (P1, P2).
 
+```bash
 D = (ABBA counts − BABA counts) / (ABBA + BABA) — significant D ≠ 0 indicates introgression.
+```
 
 #### In R, using the 'admixr' package:
 ```r
+install.packages("admixr")
+
 library(admixr)
 # Prepare EIGENSTRAT format from your concatenated alignment (see admixr docs)
 # Define populations: outgroup = Lingula, P3 = Cephalopoda,
